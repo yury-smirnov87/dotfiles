@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+set -e
+
+export DEBIAN_FRONTEND=noninteractive
+
+echo "Installing XanMod kernel"
+
+sudo apt-get install -y --no-install-recommends dkms libdw-dev clang lld llvm
+sudo apt-get install -y linux-xanmod-lts-x64v3
+
+{{ if .has_nvidia }}
+echo "Installing XanMod NVidia driver"
+
+sudo apt-get install -y nvidia-driver-580
+
+echo "Disabling IBT"
+
+GRUB_FILE="/etc/default/grub"
+PARAM="ibt=off"
+
+if grep -q "$PARAM" "$GRUB_FILE"; then
+    echo "Parameter '$PARAM' is already present in $GRUB_FILE."
+else
+    cp /etc/default/grub /etc/default/grub.bak
+    sed -i "/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/\"$/ $PARAM\"/" "$GRUB_FILE"
+    echo "Added '$PARAM' to $GRUB_FILE."
+fi
+
+echo "Updating GRUB configuration..."
+if command -v update-grub >/dev/null 2>&1; then
+    update-grub
+else
+   echo "update-grub not found"
+fi
+{{ end }}
+
+echo "Finished installing XanMod. Please reboot for changes to take effect."

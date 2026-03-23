@@ -1,0 +1,14 @@
+{{- $is_laptop := false -}}
+{{- $chassis_type := (output "cat" "/sys/class/dmi/id/chassis_type" | trim) -}}
+{{- if (or (eq $chassis_type "8") (eq $chassis_type "9") (eq $chassis_type "10") (eq $chassis_type "14")) -}}
+{{-   $is_laptop = true -}}
+{{- end -}}
+
+{{- $has_nvidia := false -}}
+{{- if (output "sh" "-c" "lspci | grep -iq nvidia && echo true || echo false" | trim | eq "true") -}}
+{{-   $has_nvidia = true -}}
+{{- end -}}
+
+data:
+    is_laptop: {{ $is_laptop }}
+    has_nvidia: {{ $has_nvidia }}

@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+set -e
+
+export DEBIAN_FRONTEND=noninteractive
+
+{{ if .is_laptop }}
+echo "Installing and configuring laptop specific packages"
+    
+LAPTOP_PACKAGES=(
+    intel-microcode
+    firmware-misc-nonfree
+    firmware-iwlwifi
+    bluez
+    bluez-firmware
+    pipewire-audio-client-libraries
+    libspa-0.2-bluetooth
+    blueman
+    tlp
+    tlp-rdw
+    thermald
+    powertop
+)
+sudo apt-get install -y --no-install-recommends  "${LAPTOP_PACKAGES[@]}"
+
+sudo apt-get purge -y --auto-remove pulseaudio-module-bluetooth bluez-alsa-utils
+
+# Enable wireplumber and restart audio subsystem
+systemctl --user --now enable wireplumber.service
+systemctl --user restart pipewire pipewire-pulse wireplumber
+
+# Enable and start TLP
+sudo systemctl enable tlp
+sudo tlp start
+
+echo "Finished installing and configuring laptop specific packages"
+{{ end }}
