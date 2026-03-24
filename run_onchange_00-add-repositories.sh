@@ -11,8 +11,8 @@ wget -qO - https://dl.xanmod.org/archive.key | sudo gpg --dearmor -vo /etc/apt/k
 echo "deb [signed-by=/etc/apt/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org $(lsb_release -sc) main non-free" | sudo tee /etc/apt/sources.list.d/xanmod-release.list    
 
 echo "Adding Dropbox repository"
-wget -qO - https://linux.dropbox.com/fedora/rpm-public-key.asc | tee /etc/apt/keyrings/dropbox.gpg > /dev/null
-echo "deb [signed-by=/etc/apt/keyrings/dropbox.gpg] http://linux.dropbox.com/debian trixie main" | tee /etc/apt/sources.list.d/dropbox.list
+wget -qO - https://linux.dropbox.com/fedora/rpm-public-key.asc | sudo tee /etc/apt/keyrings/dropbox.gpg > /dev/null
+echo "deb [signed-by=/etc/apt/keyrings/dropbox.gpg] http://linux.dropbox.com/debian trixie main" | sudo tee /etc/apt/sources.list.d/dropbox.list
 
 sudo apt-get update
 

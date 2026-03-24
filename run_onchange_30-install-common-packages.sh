@@ -17,8 +17,11 @@ PACKAGES=(
     git
     zip
     unzip
-    flatpak
     transmission
+    libavcodec-extra
+    gstreamer1.0-libav
+    gstreamer1.0-plugins-ugly
+    gstreamer1.0-vaapi
 )
 sudo apt-get install -y --no-install-recommends "${PACKAGES[@]}"
 
