@@ -22,6 +22,7 @@ PACKAGES=(
     gstreamer1.0-libav
     gstreamer1.0-plugins-ugly
     gstreamer1.0-vaapi
+    intel-media-va-driver-non-free
 )
 sudo apt-get install -y --no-install-recommends "${PACKAGES[@]}"
 

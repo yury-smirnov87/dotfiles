@@ -12,7 +12,7 @@ sudo apt-get install -y linux-xanmod-lts-x64v3
 {{ if .has_nvidia }}
 echo "Installing XanMod NVidia driver"
 
-sudo apt-get install -y nvidia-driver-580
+sudo apt-get install -y nvidia-driver-580 nvidia-vaapi-driver
 
 echo "Disabling IBT"
 
