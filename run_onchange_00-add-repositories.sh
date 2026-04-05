@@ -6,8 +6,13 @@ export DEBIAN_FRONTEND=noninteractive
 
 echo "Configuring additional repositories"
 
-echo "Adding contrib and non-free repositories"
-echo "deb http://deb.debian.org/debian/ trixie contrib non-free" | sudo tee /etc/apt/sources.list.d/extra-repos.list
+
+APT_SOURCES_FILE="/etc/apt/sources.list"
+REQUIRED_REPOS="main contrib non-free non-free-firmware"
+
+echo "Updating $APT_SOURCES_FILE to include contrib and non-free components..."
+
+sudo sed -i -E "s/^(deb(-src)? +[^ ]+ +[^ ]+ +)main.*/\1$REQUIRED_REPOS/" "$APT_SOURCES_FILE"
 
 echo "Adding XanMod repository"
 wget -qO - https://dl.xanmod.org/archive.key | sudo gpg --dearmor -vo /etc/apt/keyrings/xanmod-archive-keyring.gpg

@@ -13,13 +13,17 @@ GIT_COMPLETION_URL="https://raw.githubusercontent.com/git/git/master/contrib/com
 GIT_COMPLETION_FILE="$HOME/.git-completion.bash"
 
 if [[ -f "$GIT_COMPLETION_FILE" ]]; then
-  echo 'Git autocompletions seem to have been installed, exiting.'
-  return 0
+  echo 'Git autocompletions file present, skipping.'
+  exit
 fi
 
 echo "Downloading git completions to $GIT_COMPLETION_FILE"
-curl -s -L -o "$GIT_COMPLETION_FILE" "$GIT_COMPLETION_URL" \
-&& cat << 'EOF' >> ~/.bashrc
+
+curl -s -L -o "$GIT_COMPLETION_FILE" "$GIT_COMPLETION_URL"
+
+#TODO: check if this is already included
+
+cat << 'EOF' >> ~/.bashrc
 
 # Git autocompletions
 GIT_COMPLETION_FILE="$HOME/.git-completion.bash"
