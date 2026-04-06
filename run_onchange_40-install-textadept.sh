@@ -13,8 +13,7 @@ ARCHIVE_OUT_FILE="$HOME/$APP_NAME.tgz"
 
 curl -s -L -o "$ARCHIVE_OUT_FILE" "$ARCHIVE_URL"
 sudo tar -xf "$ARCHIVE_OUT_FILE" -C "$INSTALL_DIR"
-mkdir -p "$HOME/.local/bin"
-sudo ln -s "$INSTALL_DIR/$APP_NAME/textadept-gtk" "$HOME/.local/bin/textadept"
+sudo ln -s "$INSTALL_DIR/$APP_NAME/textadept-gtk" /usr/local/bin/textadept-gtk
 rm -f $ARCHIVE_OUT_FILE
 
 echo "Finished installing Textadept"
