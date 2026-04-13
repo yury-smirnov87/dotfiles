@@ -1,8 +1,8 @@
 [Desktop Entry]
 Name=IntelliJ IDEA
 Comment=Integrated Development Environment
-Exec=/opt/intellij/bin/idea.sh
-Icon=/opt/intellij/bin/idea.png
+Exec=/opt/idea/bin/idea.sh
+Icon=/opt/idea/bin/idea.svg
 Terminal=false
 Type=Application
 Categories=Development;IDE;
