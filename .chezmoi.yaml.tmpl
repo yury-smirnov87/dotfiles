@@ -12,3 +12,7 @@
 data:
     is_laptop: {{ $is_laptop }}
     has_nvidia: {{ $has_nvidia }}
+encryption: "age"
+age:
+  identity: "{{ .chezmoi.homeDir }}/.config/chezmoi/key.txt"
+  recipient: "age1n62t5ygs08dtll40g306jttrdnj7ztqcf5yx5cjhszz6dv0ftuasajjw49"
