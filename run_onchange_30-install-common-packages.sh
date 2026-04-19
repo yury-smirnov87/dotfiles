@@ -7,12 +7,12 @@ echo "Installing general packages, fonts, themes, cursors, etc"
 export DEBIAN_FRONTEND=noninteractive
 
 PACKAGES=(
+    age
     arc-theme
     papirus-icon-theme
     bibata-cursor-theme
     fonts-jetbrains-mono
     fonts-firacode
-    geany
     curl
     git
     zip
