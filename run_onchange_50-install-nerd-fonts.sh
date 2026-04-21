@@ -1,25 +1,30 @@
 #!/usr/bin/env bash
-
 set -e
-
-echo "Installing Nerd fonts"
-
 export DEBIAN_FRONTEND=noninteractive
 
-FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip"
-FONTS_DIR="$HOME/.local/share/fonts"
-FONT_ARCHIVE_PATH="$FONTS_DIR/JetBrainsMono.zip"
+if [ ! -f "$FONTS_DIR/JetBrainsMonoNerdFont-Regular.ttf" ]; then
+    echo "Nerd Fonts not found, installing..."
 
-mkdir -p "$FONTS_DIR"
+    FONTS_DIR="$HOME/.local/share/fonts"
+    FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip"
+    FONT_ARCHIVE_PATH="$FONTS_DIR/JetBrainsMono.zip"
 
-curl -s -L -o "$FONT_ARCHIVE_PATH" "$FONT_URL"
+    mkdir -p "$FONTS_DIR"
+    curl -s -L -o "$FONT_ARCHIVE_PATH" "$FONT_URL"
+    unzip -q "$FONT_ARCHIVE_PATH" -d "$FONTS_DIR"
+    rm -f "$FONT_ARCHIVE_PATH"
 
-unzip $FONT_ARCHIVE_PATH -d "FONTS_DIR"
+    fc-cache -fv
 
-rm -f "$FONT_ARCHIVE_PATH"
+    echo "Finished installing Nerd fonts"
+else
+    echo "JetBrainsMono Nerd Font is already installed. Skipping."
+fi
 
-fc-cache -fv
-
-curl -sS https://starship.rs/install.sh | sh -s -- -y
-
-echo "Finished installing Nerd fonts"
+if ! command -v starship &> /dev/null; then
+    echo "Starship not found, installing..."
+    curl -sS https://starship.rs/install.sh | sh -s -- -y
+    echo "Finished installing Starship"
+else
+    echo "Starship is already installed. Skipping."
+fi

@@ -12,9 +12,9 @@ sudo apt-get install -y linux-xanmod-lts-x64v3
 {{ if .has_nvidia }}
 echo "Installing XanMod NVidia driver"
 
-sudo apt-get install -y nvidia-driver-580 nvidia-vaapi-driver
+sudo apt-get install -y nvidia-driver-580 nvidia-vaapi-driver intel-microcode
 
-echo "Disabling IBT"
+echo "Configuring GRUB for Nvidia (Disabling IBT)"
 
 GRUB_FILE="/etc/default/grub"
 PARAM="ibt=off"
@@ -22,16 +22,18 @@ PARAM="ibt=off"
 if grep -q "$PARAM" "$GRUB_FILE"; then
     echo "Parameter '$PARAM' is already present in $GRUB_FILE."
 else
-    cp /etc/default/grub /etc/default/grub.bak
-    sed -i "/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/\"$/ $PARAM\"/" "$GRUB_FILE"
+    sudo cp "$GRUB_FILE" "${GRUB_FILE}.bak"
+    #sudo sed -i "/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/\"$/ $PARAM\"/" "$GRUB_FILE"
+    sudo sed -i -E '/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/\"[[:space:]]*$/ '"$PARAM"'\"/' "$GRUB_FILE"
     echo "Added '$PARAM' to $GRUB_FILE."
 fi
 
 echo "Updating GRUB configuration..."
 if command -v update-grub >/dev/null 2>&1; then
-    update-grub
+    sudo update-grub
 else
-   echo "update-grub not found"
+    echo "Error: update-grub not found. Manual configuration required!" >&2
+    exit 1
 fi
 {{ end }}
 
