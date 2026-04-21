@@ -6,7 +6,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 {{ if .is_laptop }}
 echo "Installing and configuring laptop specific packages"
-    
+
 LAPTOP_PACKAGES=(
     intel-microcode
     firmware-misc-nonfree
@@ -26,12 +26,16 @@ sudo apt-get install -y --no-install-recommends  "${LAPTOP_PACKAGES[@]}"
 sudo apt-get purge -y --auto-remove pulseaudio-module-bluetooth bluez-alsa-utils
 
 # Enable wireplumber and restart audio subsystem
-systemctl --user --now enable wireplumber.service
-systemctl --user restart pipewire pipewire-pulse wireplumber
+if [ -n "$USER" ] && [ "$USER" != "root" ]; then
+    systemctl --user --now enable wireplumber.service
+    systemctl --user restart pipewire pipewire-pulse wireplumber
+fi
 
 # Enable and start TLP
-sudo systemctl enable tlp
+sudo systemctl enable --now tlp
 sudo tlp start
+
+sudo powertop --auto-tune
 
 echo "Finished installing and configuring laptop specific packages"
 {{ end }}

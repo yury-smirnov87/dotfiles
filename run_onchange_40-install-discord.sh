@@ -1,16 +1,24 @@
 #!/usr/bin/env bash
-
 set -e
-
-echo "Installing discord"
-
 export DEBIAN_FRONTEND=noninteractive
 
-DISCORD_URL="https://discord.com/api/download?platform=linux&format=deb"
-DISCORD_PATH="$HOME/discord.deb"
+echo "Installing Discord"
 
-curl -s -L -o "$DISCORD_PATH" "$DISCORD_URL"
-sudo apt --fix-broken -y install "$DISCORD_PATH"
-rm -f "$DISCORD_PATH"
+if ! dpkg -l | grep -q "^ii  discord"; then
+    echo "Discord not found, downloading and installing..."
 
-echo "Finished installing discord"
+    DISCORD_URL="https://discord.com/api/download?platform=linux&format=deb"
+    DISCORD_PATH="/tmp/discord.deb"
+
+    curl -s -L -o "$DISCORD_PATH" "$DISCORD_URL"
+
+    sudo apt-get update -q
+    sudo apt-get install -y -q "$DISCORD_PATH"
+    sudo apt-get install -f -y -q
+
+    rm -f "$DISCORD_PATH"
+
+    echo "Finished installing Discord"
+else
+    echo "Discord is already installed. Skipping."
+fi
