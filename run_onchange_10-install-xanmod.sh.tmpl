@@ -29,7 +29,7 @@ else
 fi
 
 echo "Updating GRUB configuration..."
-if command -v update-grub >/dev/null 2>&1; then
+if command -v sudo update-grub >/dev/null 2>&1; then
     sudo update-grub
 else
     echo "Error: update-grub not found. Manual configuration required!" >&2
