@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
-if [ -z "$BW_SESSION" ]; then
-    echo "Bitwarden is locked. Please enter your master password:"
-    export BW_SESSION=$(bw unlock --raw)
-fi
+echo "Generating key.txt"
 
 mkdir -p "$HOME/.config/chezmoi"
 
