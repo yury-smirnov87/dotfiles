@@ -50,6 +50,30 @@ add_repo "wezterm" \
     "https://apt.fury.io/wez/gpg.key" \
     "deb [signed-by=/etc/apt/keyrings/wezterm.gpg] https://apt.fury.io/wez/ * *"
 
+# 5. Docker (Official Upstream)
+add_repo "docker" \
+    "https://download.docker.com/linux/debian/gpg" \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -sc) stable"
+
+# 6. Remove legacy/distro-provided docker packages
+LEGACY_PACKAGES=(
+    docker.io
+    docker-doc
+    docker-compose
+    docker-compose-v2
+    podman-docker
+    containerd
+    runc
+)
+
+for pkg in "${LEGACY_PACKAGES[@]}"; do
+    if dpkg -l | grep -q "^ii  $pkg"; then
+        echo "Removing legacy package: $pkg"
+        sudo apt-get purge -y "$pkg"
+    fi
+done
+sudo apt-get autoremove -y
+
 sudo apt-get update
 
 echo "Finished configuring additional repositories"
