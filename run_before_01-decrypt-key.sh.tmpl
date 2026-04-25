@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+KEY_FILE="$HOME/.config/chezmoi/key.txt"
+
+if [ ! -f "$KEY_FILE" ]; then
+    echo "Key not found. Fetching from Bitwarden..."
+
+    mkdir -p "$(dirname "$KEY_FILE")"
+
+    cat <<EOF > "$KEY_FILE"
+{{ (bitwarden "item" "age-secret").notes }}
+EOF
+
+    chmod 600 "$KEY_FILE"
+    echo "Secret key restored to $KEY_FILE"
+else
+    # Quietly confirm existence for 'chezmoi status' support
+    echo "Age key already present. Skipping fetch."
+fi
