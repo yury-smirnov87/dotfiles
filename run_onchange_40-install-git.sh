@@ -9,6 +9,7 @@ export DEBIAN_FRONTEND=noninteractive
 git config --global user.name "Yury Smirnov"
 git config --global user.email "yury.smirnov87@gmail.com"
 git config --global core.autocrlf input
+git config --global init.defaultBranch main
 
 GIT_COMPLETION_URL="https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash"
 GIT_COMPLETION_FILE="$HOME/.git-completion.bash"
