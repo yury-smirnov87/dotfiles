@@ -2,12 +2,12 @@
 set -e
 export DEBIAN_FRONTEND=noninteractive
 
+FONTS_DIR="$HOME/.local/share/fonts"
+FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip"
+FONT_ARCHIVE_PATH="$FONTS_DIR/JetBrainsMono.zip"
+
 if [ ! -f "$FONTS_DIR/JetBrainsMonoNerdFont-Regular.ttf" ]; then
     echo "Nerd Fonts not found, installing..."
-
-    FONTS_DIR="$HOME/.local/share/fonts"
-    FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip"
-    FONT_ARCHIVE_PATH="$FONTS_DIR/JetBrainsMono.zip"
 
     mkdir -p "$FONTS_DIR"
     curl -s -L -o "$FONT_ARCHIVE_PATH" "$FONT_URL"

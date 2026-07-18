@@ -4,7 +4,7 @@
 ./run_before_00-install-bitwarden-cli.sh
 
 # Log in and unlock Bitwarden vault
-if [[ "$(bw status | jq -r .status)" == "unauthenticated" ]]; then
+if bw status | grep -q '"status":"unauthenticated"'; then
     bw login
 fi
 
