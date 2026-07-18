@@ -40,10 +40,6 @@ add_repo "xanmod" \
     "https://dl.xanmod.org/archive.key" \
     "deb [signed-by=/etc/apt/keyrings/xanmod.gpg] http://deb.xanmod.org $(lsb_release -sc) main non-free"
 
-# 3. Dropbox (Fixed: de-armor the key)
-add_repo "dropbox" \
-    "https://linux.dropbox.com/fedora/rpm-public-key.asc" \
-    "deb [signed-by=/etc/apt/keyrings/dropbox.gpg] http://linux.dropbox.com/debian $(lsb_release -sc) main"
 
 # 4. WezTerm
 add_repo "wezterm" \

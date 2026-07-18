@@ -15,7 +15,7 @@ MULTIMEDIA=(
     gstreamer1.0-vaapi
     intel-media-va-driver-non-free
 )
-APPS=(transmission dropbox)
+APPS=(transmission)
 
 sudo apt-get install -y --no-install-recommends \
     "${DEV_TOOLS[@]}" "${THEMES[@]}" "${FONTS[@]}" "${MULTIMEDIA[@]}" "${APPS[@]}"
