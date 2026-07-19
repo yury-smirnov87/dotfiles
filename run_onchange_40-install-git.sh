@@ -21,16 +21,4 @@ else
     echo "Git autocompletions file already present."
 fi
 
-if ! grep -q "GIT_COMPLETION_FILE" ~/.bashrc; then
-    echo "Adding Git autocompletion sourcing to .bashrc"
-    cat << 'EOF' >> ~/.bashrc
-
-# Git autocompletions added by chezmoi provisioning
-GIT_COMPLETION_FILE="$HOME/.git-completion.bash"
-if [ -f "$GIT_COMPLETION_FILE" ]; then
-  source "$GIT_COMPLETION_FILE"
-fi
-EOF
-fi
-
 echo "Finished installing Git"
