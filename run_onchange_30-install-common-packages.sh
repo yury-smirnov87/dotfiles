@@ -32,6 +32,10 @@ if pgrep -x "cinnamon" > /dev/null; then
     gsettings set org.cinnamon.desktop.interface icon-theme "Papirus"
     gsettings set org.cinnamon.desktop.interface cursor-theme "Bibata-Modern-Ice"
     gsettings set org.gnome.desktop.interface monospace-font-name "JetBrains Mono 11"
+    gsettings set org.cinnamon.desktop.input-sources sources "[('xkb', 'us'), ('xkb', 'ru')]"
+    gsettings set org.cinnamon.desktop.input-sources xkb-options "['grp:alt_shift_toggle']"
+    gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('xkb', 'ru')]"
+    gsettings set org.gnome.desktop.input-sources xkb-options "['grp:alt_shift_toggle']"
 else
     echo "Cinnamon session not detected; skipping UI configuration."
 fi
