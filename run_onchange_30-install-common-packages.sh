@@ -36,6 +36,13 @@ if pgrep -x "cinnamon" > /dev/null; then
     gsettings set org.cinnamon.desktop.input-sources xkb-options "['grp:alt_shift_toggle']"
     gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('xkb', 'ru')]"
     gsettings set org.gnome.desktop.input-sources xkb-options "['grp:alt_shift_toggle']"
+
+    # Configure Nemo file manager view preferences
+    gsettings set org.nemo.preferences default-folder-viewer 'list-view'
+    gsettings set org.nemo.preferences ignore-view-metadata true
+    gsettings set org.nemo.icon-view default-zoom-level 'small'
+    gsettings set org.nemo.compact-view default-zoom-level 'small'
+    gsettings set org.nemo.list-view default-zoom-level 'small'
 else
     echo "Cinnamon session not detected; skipping UI configuration."
 fi
