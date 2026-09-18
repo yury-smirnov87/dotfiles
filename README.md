@@ -17,7 +17,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
   * **Nvidia GPU Detection**: Installs proprietary Nvidia drivers (`nvidia-driver-580`, `nvidia-vaapi-driver`), disables `ibt=off` in GRUB, and re-generates kernel configurations.
 * **🐧 XanMod Kernel**: Installs the high-performance `linux-xanmod-lts-x64v3` kernel along with necessary compilation tooling.
 * **🛠️ Developer Infrastructure & Runtimes**:
-  * **SDKMAN!**: Java (Zulu 21.0.8) & Maven (3.9.9).
+  * **SDKMAN!**: Java (Temurin 25.0.4) & Maven (3.9.16).
   * **FNM (Fast Node Manager)**: Automated Node.js LTS management.
   * **Google Antigravity CLI**: `agy` executable provisioning.
   * **Docker Engine**: Official upstream Docker repository setup, user group auto-assignment, and `docker-compose-plugin` / `docker-buildx-plugin`.
@@ -118,7 +118,7 @@ flowchart TD
 | :--- | :--- | :--- |
 | **Shell & Terminal** | Bash, WezTerm, Starship | Gruvbox Material theme, JetBrains Mono Nerd Font, WebGPU support |
 | **System Kernel** | XanMod LTS x64v3 | Optional Nvidia drivers (v580) with `ibt=off` GRUB parameter |
-| **Development** | Java, Maven, Node.js, Git | SDKMAN! (Java 21 Zulu, Maven 3.9.9), FNM (LTS Node), Git completion |
+| **Development** | Java, Maven, Node.js, Git | SDKMAN! (Java 25 Temurin, Maven 3.9.16), FNM (LTS Node), Git completion |
 | **IDEs & Editors** | IntelliJ IDEA, Textadept | Clean desktop integration, `/opt` installations, custom keybindings |
 | **Browsers** | Zen Browser | Firefox-based privacy browser with custom desktop entry |
 | **Containers** | Docker Engine | `docker-ce`, `docker-compose-plugin`, auto group configuration |

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e
 export DEBIAN_FRONTEND=noninteractive
+export sdkman_auto_answer=true
 
 echo "Installing SDKMan and sdks"
 
@@ -12,12 +13,15 @@ fi
 
 source "$HOME/.sdkman/bin/sdkman-init.sh"
 
-if [[ ! -d "$HOME/.sdkman/candidates/java/21.0.8-zulu" ]]; then
-    sdk install java 21.0.8-zulu
+if [[ ! -d "$HOME/.sdkman/candidates/java/25.0.4-tem" ]]; then
+    sdk install java 25.0.4-tem
 fi
+sdk default java 25.0.4-tem
 
-if [[ ! -d "$HOME/.sdkman/candidates/maven/3.9.9" ]]; then
-    sdk install maven 3.9.9
+if [[ ! -d "$HOME/.sdkman/candidates/maven/3.9.16" ]]; then
+    sdk install maven 3.9.16
 fi
+sdk default maven 3.9.16
+
 
 echo "Finished installing SDKMan and sdks"
