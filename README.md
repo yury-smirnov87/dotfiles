@@ -76,21 +76,42 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 
 ## 🚀 Quick Start / Bootstrapping
 
-To set up a fresh Linux machine, run the single-line bootstrap command or run `./bootstrap.sh`:
+To set up a fresh Linux machine, run the bootstrap command. The script authenticates with Bitwarden using your **Personal API Key** (bypassing 2FA/TOTP prompts) and unlocks your vault to restore Age keys and secrets.
+
+> [!TIP]
+> You can find your Personal API Key in the Bitwarden Web Vault under **Settings** → **Security** → **Keys** tab → **View API Key** (`client_id` and `client_secret`).
+
+### Option A: Fully Automated / Headless (Recommended)
+
+Export your credentials into the shell environment beforehand:
+
+```bash
+export BW_CLIENTID="user.xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+export BW_CLIENTSECRET="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+export BW_PASSWORD="your-master-password"
+
+wget -qO- https://raw.githubusercontent.com/yury-smirnov87/dotfiles/main/bootstrap.sh | bash
+```
+
+### Option B: Interactive Execution
+
+Run the script directly; it will securely prompt for your Client ID, Client Secret, and Master Password via `/dev/tty`:
 
 ```bash
 wget -qO- https://raw.githubusercontent.com/yury-smirnov87/dotfiles/main/bootstrap.sh | bash
+# or if cloned locally:
+./bootstrap.sh
 ```
 
 ### What `bootstrap.sh` Does:
 
-1. Ensures `~/.local/bin` exists and is in `PATH`.
-2. Installs `chezmoi` idempotently into `~/.local/bin`.
+1. Ensures baseline dependencies (`git`) and `~/.local/bin` exist.
+2. Installs `chezmoi` idempotently into `~/.local/bin` using `wget`.
 3. Downloads and installs the **Bitwarden CLI** (`bw`).
-4. Prompts for **Bitwarden login & vault unlock**, setting `BW_SESSION` in the active shell.
-5. Fetches the Age secret key from the Bitwarden item named `age-secret` and saves it to `~/.config/chezmoi/key.txt`.
+4. Authenticates to Bitwarden using your **Personal API Key** (bypassing 2FA) and unlocks the vault, exporting `BW_SESSION` in the active shell.
+5. Immediately unsets API secrets and master password from the shell environment.
 6. Initializes chezmoi from `https://github.com/yury-smirnov87/dotfiles.git`.
-7. Executes `chezmoi apply --force` to run all provisioning scripts and apply dotfiles.
+7. Executes `chezmoi apply --force` to decrypt Age keys, run all provisioning scripts, and apply dotfiles.
 8. Reconfigures the chezmoi git remote URL to SSH (`git@github.com:yury-smirnov87/dotfiles.git`) once SSH keys are restored.
 
 ---
