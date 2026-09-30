@@ -79,7 +79,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 To set up a fresh Linux machine, run the single-line bootstrap command or run `./bootstrap.sh`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yury-smirnov87/dotfiles/main/bootstrap.sh | bash
+wget -qO- https://raw.githubusercontent.com/yury-smirnov87/dotfiles/main/bootstrap.sh | bash
 ```
 
 ### What `bootstrap.sh` Does:
