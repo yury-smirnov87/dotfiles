@@ -5,17 +5,10 @@ set -e
 mkdir -p "$HOME/.local/bin"
 export PATH="$HOME/.local/bin:$PATH"
 
-# Ensure prerequisites (curl, git) are installed
-MISSING_PKGS=()
-for pkg in curl git; do
-    if ! command -v "$pkg" &> /dev/null; then
-        MISSING_PKGS+=("$pkg")
-    fi
-done
-
-if [ ${#MISSING_PKGS[@]} -gt 0 ]; then
-    echo "Missing required prerequisites: ${MISSING_PKGS[*]}"
-    echo "Installing missing packages via apt-get..."
+# Ensure prerequisite (git) is installed
+if ! command -v git &> /dev/null; then
+    echo "Missing required prerequisite: git"
+    echo "Installing git via apt-get..."
 
     SUDO=""
     if [ "$EUID" -ne 0 ]; then
@@ -27,13 +20,13 @@ if [ ${#MISSING_PKGS[@]} -gt 0 ]; then
         fi
     fi
 
-    $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y "${MISSING_PKGS[@]}"
+    $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y git
 fi
 
 # Idempotently install chezmoi
 if ! command -v chezmoi &> /dev/null; then
     echo "Installing chezmoi..."
-    sh -c "$(curl -fsLS https://chezmoi.io/get)" -- -b "$HOME/.local/bin"
+    sh -c "$(wget -qO- https://chezmoi.io/get)" -- -b "$HOME/.local/bin"
 fi
 
 # Bitwarden account configuration (CLI argument > env var > default)
