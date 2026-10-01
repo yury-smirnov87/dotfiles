@@ -13,7 +13,7 @@ TEMP_ZIP="/tmp/bw.zip"
 if ! command -v "$BINARY_NAME" &> /dev/null; then
     echo "Bitwarden CLI not found. Downloading..."
 
-    curl -s -L -o "$TEMP_ZIP" "$DOWNLOAD_URL"
+    wget -q -O "$TEMP_ZIP" "$DOWNLOAD_URL"
     sudo unzip -o "$TEMP_ZIP" -d "/usr/local/bin"
     sudo chmod +x "$INSTALL_PATH"
     rm -f "$TEMP_ZIP"

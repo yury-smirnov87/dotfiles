@@ -29,19 +29,22 @@ if ! command -v chezmoi &> /dev/null; then
     sh -c "$(wget -qO- https://chezmoi.io/get)" -- -b "$HOME/.local/bin"
 fi
 
+# Idempotently initialize chezmoi with HTTPS URL
+if [ ! -d "$HOME/.local/share/chezmoi/.git" ]; then
+    echo "Initializing chezmoi with HTTPS URL..."
+    chezmoi init https://github.com/yury-smirnov87/dotfiles.git
+else
+    echo "Chezmoi is already initialized."
+fi
+
+# Ensure Bitwarden CLI is installed
+"$HOME/.local/share/chezmoi/run_before_00-install-bitwarden-cli.sh"
+
 # Bitwarden credentials configuration
 # Supports environment variables (BW_CLIENTID, BW_CLIENTSECRET, BW_PASSWORD) or prompts via /dev/tty
 BW_CLIENTID="${BW_CLIENTID:-}"
 BW_CLIENTSECRET="${BW_CLIENTSECRET:-}"
 BW_PASSWORD="${BW_PASSWORD:-}"
-
-# Ensure BW is installed (runs your existing install script)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
-if [ -f "$SCRIPT_DIR/run_before_00-install-bitwarden-cli.sh" ]; then
-    "$SCRIPT_DIR/run_before_00-install-bitwarden-cli.sh"
-elif [ -f "$HOME/.local/share/chezmoi/run_before_00-install-bitwarden-cli.sh" ]; then
-    "$HOME/.local/share/chezmoi/run_before_00-install-bitwarden-cli.sh"
-fi
 
 # 1. Authenticate with Bitwarden using Personal API Key (bypasses 2FA prompts)
 if bw status | grep -q '"status":"unauthenticated"'; then
@@ -97,14 +100,6 @@ fi
 if [ -z "${BW_SESSION:-}" ]; then
     echo "Error: Failed to obtain Bitwarden session key." >&2
     exit 1
-fi
-
-# Idempotently initialize chezmoi with HTTPS URL (no SSH key required to clone)
-if [ ! -d "$HOME/.local/share/chezmoi/.git" ]; then
-    echo "Initializing chezmoi with HTTPS URL..."
-    chezmoi init https://github.com/yury-smirnov87/dotfiles.git
-else
-    echo "Chezmoi is already initialized."
 fi
 
 chezmoi apply --force
