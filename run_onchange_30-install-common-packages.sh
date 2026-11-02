@@ -5,7 +5,7 @@ export DEBIAN_FRONTEND=noninteractive
 echo "Installing common packages and desktop assets"
 
 # Grouping by purpose for easier maintenance
-DEV_TOOLS=(age curl git zip unzip wezterm)
+DEV_TOOLS=(age curl git zip unzip wezterm nodejs npm)
 THEMES=(arc-theme papirus-icon-theme bibata-cursor-theme)
 FONTS=(fonts-jetbrains-mono fonts-firacode ttf-mscorefonts-installer)
 MULTIMEDIA=(
@@ -15,7 +15,7 @@ MULTIMEDIA=(
     gstreamer1.0-vaapi
     intel-media-va-driver-non-free
 )
-APPS=(transmission)
+APPS=(chromium transmission)
 
 # Pre-accept Microsoft EULA for unattended font installation
 echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | sudo debconf-set-selections

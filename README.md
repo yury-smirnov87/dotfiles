@@ -18,7 +18,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 * **🐧 XanMod Kernel**: Installs the high-performance `linux-xanmod-lts-x64v3` kernel along with necessary compilation tooling.
 * **🛠️ Developer Infrastructure & Runtimes**:
   * **SDKMAN!**: Java (Temurin 25.0.4) & Maven (3.9.16).
-  * **FNM (Fast Node Manager)**: Automated Node.js LTS management.
+  * **Node.js & npm**: System runtimes installed from Debian repository.
   * **Google Antigravity CLI**: `agy` executable provisioning.
   * **Docker Engine**: Official upstream Docker repository setup, user group auto-assignment, and `docker-compose-plugin` / `docker-buildx-plugin`.
 * **🎨 Desktop Customization & Themes**:
@@ -26,7 +26,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
   * **Cinnamon & Nemo**: Pre-configured desktop keybindings, input sources (US + RU with `Alt+Shift` toggle), font sizes, and Nemo list-view preferences.
   * **Fonts & Prompt**: JetBrains Mono Nerd Font paired with [Starship](https://starship.rs/) prompt.
 * **📦 Curated Software Suite**:
-  * **Browsers**: Zen Browser, system web tools.
+  * **Browsers**: Chromium, system web tools.
   * **IDEs & Editors**: IntelliJ IDEA Ultimate, Textadept, WezTerm.
   * **Communication & Utilities**: Telegram Desktop, Discord, Zoom, Filen Desktop, ExpressVPN, Transmission.
 
@@ -52,11 +52,9 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 ├── run_onchange_40-install-filen.sh       # Filen desktop client installer
 ├── run_onchange_40-install-git.sh         # Global git config & bash completion
 ├── run_onchange_40-install-intellij.sh    # IntelliJ IDEA Ultimate installer (/opt/idea)
-├── run_onchange_40-install-node-infra.sh  # FNM and Node LTS runtime setup
 ├── run_onchange_40-install-sdks.sh        # SDKMAN!, Java 21, Maven installation
 ├── run_onchange_40-install-telegram.sh    # Telegram Desktop installer (/opt/Telegram)
 ├── run_onchange_40-install-textadept.sh   # Textadept text editor installer (/opt/textadept)
-├── run_onchange_40-install-zen.sh         # Zen Browser installer (/opt/zen)
 ├── run_onchange_40-install-zoom.sh        # Zoom .deb installer
 ├── run_onchange_50-install-nerd-fonts.sh  # JetBrains Mono Nerd Font & Starship prompt
 ├── dot_bashrc.tmpl                        # Bash configuration template (~/.bashrc)
@@ -139,9 +137,9 @@ flowchart TD
 | :--- | :--- | :--- |
 | **Shell & Terminal** | Bash, WezTerm, Starship | Gruvbox Material theme, JetBrains Mono Nerd Font, WebGPU support |
 | **System Kernel** | XanMod LTS x64v3 | Optional Nvidia drivers (v580) with `ibt=off` GRUB parameter |
-| **Development** | Java, Maven, Node.js, Git | SDKMAN! (Java 25 Temurin, Maven 3.9.16), FNM (LTS Node), Git completion |
+| **Development** | Java, Maven, Node.js, npm, Git | SDKMAN! (Java 25 Temurin, Maven 3.9.16), Node.js & npm (Debian APT), Git completion |
 | **IDEs & Editors** | IntelliJ IDEA, Textadept | Clean desktop integration, `/opt` installations, custom keybindings |
-| **Browsers** | Zen Browser | Firefox-based privacy browser with custom desktop entry |
+| **Browsers** | Chromium | Debian repository package |
 | **Containers** | Docker Engine | `docker-ce`, `docker-compose-plugin`, auto group configuration |
 | **Productivity / Media** | Discord, Telegram, Zoom, Filen | Official `.deb` packages & Linux tarballs |
 | **VPN & Security** | ExpressVPN, Bitwarden, Age | CLI vault access & encrypted SSH keys |
