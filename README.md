@@ -37,6 +37,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 ```
 .
 ├── .chezmoi.yaml.tmpl                     # Chezmoi configuration template (hardware probing)
+├── AGENTS.md                              # Repository guidelines & operational rules
 ├── bootstrap.sh                            # Primary bootstrap entrypoint
 ├── README.md                              # Repository documentation
 ├── run_before_00-install-bitwarden-cli.sh # Ensures Bitwarden CLI (bw) is installed
