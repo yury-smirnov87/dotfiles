@@ -5,7 +5,7 @@ export DEBIAN_FRONTEND=noninteractive
 echo "Installing common packages and desktop assets"
 
 # Grouping by purpose for easier maintenance
-DEV_TOOLS=(age curl git zip unzip wezterm nodejs npm)
+DEV_TOOLS=(age curl git zip unzip wezterm nodejs npm sqlite3 sqlitebrowser)
 THEMES=(arc-theme papirus-icon-theme bibata-cursor-theme)
 FONTS=(fonts-jetbrains-mono fonts-firacode ttf-mscorefonts-installer)
 MULTIMEDIA=(
