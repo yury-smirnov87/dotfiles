@@ -19,7 +19,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 * **🛠️ Developer Infrastructure & Runtimes**:
   * **SDKMAN!**: Java (Temurin 25.0.4) & Maven (3.9.16).
   * **Node.js & npm**: System runtimes installed from Debian repository.
-  * **SQLite**: SQLite 3 database CLI tooling installed from Debian repository.
+  * **SQLite**: SQLite 3 database CLI tooling and DB Browser for SQLite (`sqlitebrowser`) from Debian repository.
   * **Google Antigravity CLI**: `agy` executable provisioning.
   * **Docker Engine**: Official upstream Docker repository setup, user group auto-assignment, and `docker-compose-plugin` / `docker-buildx-plugin`.
 * **🎨 Desktop Customization & Themes**:
@@ -139,7 +139,7 @@ flowchart TD
 | :--- | :--- | :--- |
 | **Shell & Terminal** | Bash, WezTerm, Starship | Gruvbox Material theme, JetBrains Mono Nerd Font, WebGPU support |
 | **System Kernel** | XanMod LTS x64v3 | Optional Nvidia drivers (v580) with `ibt=off` GRUB parameter |
-| **Development** | Java, Maven, Node.js, npm, Git, SQLite | SDKMAN! (Java 25 Temurin, Maven 3.9.16), Node.js & npm (Debian APT), Git completion, SQLite3 CLI |
+| **Development** | Java, Maven, Node.js, npm, Git, SQLite | SDKMAN! (Java 25 Temurin, Maven 3.9.16), Node.js & npm (Debian APT), Git completion, SQLite3 CLI & DB Browser for SQLite |
 | **IDEs & Editors** | IntelliJ IDEA, Textadept | Clean desktop integration, `/opt` installations, custom keybindings |
 | **Browsers** | Chromium | Debian repository package |
 | **Containers** | Docker Engine | `docker-ce`, `docker-compose-plugin`, auto group configuration |
