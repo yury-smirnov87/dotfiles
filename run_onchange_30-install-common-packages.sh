@@ -46,8 +46,10 @@ echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select t
 sudo apt-get install -y --no-install-recommends \
     "${DEV_TOOLS[@]}" "${THEMES[@]}" "${FONTS[@]}" "${MULTIMEDIA[@]}" "${APPS[@]}"
 
-# Ensure KTorrent is the only BitTorrent client
-sudo apt-get purge -y --auto-remove transmission transmission-gtk transmission-qt transmission-common || true
+# Ensure KTorrent is the only BitTorrent client and remove unwanted PDF viewers
+sudo apt-get purge -y --auto-remove \
+    transmission transmission-gtk transmission-qt transmission-common \
+    evince evince-common okular || true
 
 # Update font cache silently
 fc-cache -fv > /dev/null
