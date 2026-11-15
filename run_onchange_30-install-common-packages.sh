@@ -38,6 +38,7 @@ APPS=(
     xdg-desktop-portal-kde
     chromium
     ktorrent
+    okular
 )
 
 # Pre-accept Microsoft EULA for unattended font installation
@@ -46,10 +47,8 @@ echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select t
 sudo apt-get install -y --no-install-recommends \
     "${DEV_TOOLS[@]}" "${THEMES[@]}" "${FONTS[@]}" "${MULTIMEDIA[@]}" "${APPS[@]}"
 
-# Ensure KTorrent is the only BitTorrent client and remove unwanted PDF viewers
-sudo apt-get purge -y --auto-remove \
-    transmission transmission-gtk transmission-qt transmission-common \
-    evince evince-common okular || true
+# Remove Evince if present
+sudo apt-get purge -y --auto-remove evince evince-common || true
 
 # Update font cache silently
 fc-cache -fv > /dev/null
