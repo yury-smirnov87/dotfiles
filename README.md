@@ -23,8 +23,8 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
   * **Google Antigravity CLI**: `agy` executable provisioning.
   * **Docker Engine**: Official upstream Docker repository setup, user group auto-assignment, and `docker-compose-plugin` / `docker-buildx-plugin`.
 * **🎨 Desktop Environment & Themes**:
-  * **KDE Plasma**: Minimal KDE Plasma desktop environment (`kde-plasma-desktop`).
-  * **GTK & Icons**: Arc theme, Papirus icon set, Bibata Modern Ice cursor.
+  * **KDE Plasma**: Minimal KDE Plasma desktop environment (`kde-plasma-desktop`) configured with **Breeze Light** look-and-feel, keyboard layouts (US + RU with `Alt+Shift` toggle), and Dolphin global view preferences.
+  * **Themes, Icons & Cursor**: Breeze GTK theme (`breeze-gtk-theme`, `kde-config-gtk-style`), Papirus Light icon set, Bibata Modern Ice cursor.
   * **Fonts & Prompt**: JetBrains Mono Nerd Font paired with [Starship](https://starship.rs/) prompt.
 * **📦 Curated Software Suite**:
   * **Browsers**: Chromium, system web tools.
@@ -137,7 +137,7 @@ flowchart TD
 
 | Category | Component / Tool | Details |
 | :--- | :--- | :--- |
-| **Desktop Environment** | KDE Plasma | Minimal Plasma setup (`kde-plasma-desktop`), Arc theme, Papirus icons, Bibata cursor |
+| **Desktop Environment** | KDE Plasma | Minimal Plasma setup (`kde-plasma-desktop`), Breeze Light theme, US/RU (`Alt+Shift`), Papirus Light icons, Bibata cursor |
 | **Shell & Terminal** | Bash, WezTerm, Starship | Gruvbox Material theme, JetBrains Mono Nerd Font, WebGPU support |
 | **System Kernel** | XanMod LTS x64v3 | Optional Nvidia drivers (v580) with `ibt=off` GRUB parameter |
 | **Development** | Java, Maven, Node.js, npm, Git, SQLite | SDKMAN! (Java 25 Temurin, Maven 3.9.16), Node.js & npm (Debian APT), Git completion, SQLite3 CLI & DB Browser for SQLite |

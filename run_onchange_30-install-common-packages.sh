@@ -6,7 +6,7 @@ echo "Installing common packages and desktop assets"
 
 # Grouping by purpose for easier maintenance
 DEV_TOOLS=(age curl git zip unzip wezterm nodejs npm sqlite3 sqlitebrowser)
-THEMES=(arc-theme papirus-icon-theme bibata-cursor-theme)
+THEMES=(breeze-gtk-theme kde-config-gtk-style papirus-icon-theme bibata-cursor-theme)
 FONTS=(fonts-jetbrains-mono fonts-firacode ttf-mscorefonts-installer)
 MULTIMEDIA=(
     libavcodec-extra
@@ -25,5 +25,51 @@ sudo apt-get install -y --no-install-recommends \
 
 # Update font cache silently
 fc-cache -fv > /dev/null
+
+echo "Applying KDE Plasma UI preferences..."
+
+# 1. Global Theme & Light Color Scheme (Breeze Light)
+kwriteconfig6 --file kdeglobals --group KDE --key LookAndFeelPackage "org.kde.breeze.desktop"
+kwriteconfig6 --file kdeglobals --group KDE --key widgetStyle "Breeze"
+kwriteconfig6 --file kdeglobals --group General --key ColorScheme "BreezeLight"
+
+# 2. Icons, Cursor & Monospace Font
+kwriteconfig6 --file kdeglobals --group Icons --key Theme "Papirus-Light"
+kwriteconfig6 --file kcminputrc --group Mouse --key cursorTheme "Bibata-Modern-Ice"
+kwriteconfig6 --file kdeglobals --group General --key fixed "JetBrains Mono,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1"
+
+# 3. GTK application consistency under KDE (Breeze Light)
+if command -v gsettings &> /dev/null; then
+    gsettings set org.gnome.desktop.interface gtk-theme "Breeze" || true
+    gsettings set org.gnome.desktop.interface color-scheme "prefer-light" || true
+    gsettings set org.gnome.desktop.interface icon-theme "Papirus-Light" || true
+    gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Ice" || true
+    gsettings set org.gnome.desktop.interface monospace-font-name "JetBrains Mono 11" || true
+fi
+
+# 4. Keyboard Layouts (US + RU) with Alt+Shift toggle
+kwriteconfig6 --file kxkbrc --group Layout --key Use true
+kwriteconfig6 --file kxkbrc --group Layout --key LayoutList "us,ru"
+kwriteconfig6 --file kxkbrc --group Layout --key Options "grp:alt_shift_toggle"
+kwriteconfig6 --file kxkbrc --group Layout --key ResetOldOptions true
+
+# 5. Dolphin File Manager preferences (global view properties & small icon sizes)
+kwriteconfig6 --file dolphinrc --group General --key GlobalViewProps true
+kwriteconfig6 --file dolphinrc --group DetailsMode --key IconSize 16
+kwriteconfig6 --file dolphinrc --group CompactMode --key IconSize 16
+kwriteconfig6 --file dolphinrc --group IconsMode --key IconSize 32
+
+# Apply changes immediately if running inside an active Plasma session
+if pgrep -x "plasmashell" > /dev/null; then
+    plasma-apply-lookandfeel -a org.kde.breeze.desktop || true
+    plasma-apply-colorscheme BreezeLight || true
+    plasma-apply-cursortheme Bibata-Modern-Ice || true
+    if [ -x /usr/lib/x86_64-linux-gnu/libexec/plasma-changeicons ]; then
+        /usr/lib/x86_64-linux-gnu/libexec/plasma-changeicons Papirus-Light || true
+    fi
+    if command -v dbus-send &> /dev/null; then
+        dbus-send --session --type=method_call --dest=org.kde.keyboard /Layouts org.kde.KeyboardLayouts.reloadConfig || true
+    fi
+fi
 
 echo "Finished installing common packages and desktop assets"
