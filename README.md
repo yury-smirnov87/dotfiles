@@ -65,7 +65,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 │   └── init.lua                           # Textadept configuration (~/.textadept/init.lua)
 ├── dot_local/share/applications/          # Custom Desktop Launchers (.desktop files)
 │   ├── intellij.desktop
-│   └── textadept-gtk.desktop
+│   └── textadept.desktop
 └── private_dot_ssh/                       # Encrypted SSH configuration and keys
     ├── config.tmpl
     ├── encrypted_private_id_ed25519.age   # Age-encrypted private SSH key
