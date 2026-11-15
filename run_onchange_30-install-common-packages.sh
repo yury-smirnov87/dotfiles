@@ -37,7 +37,7 @@ APPS=(
     kio-fuse
     xdg-desktop-portal-kde
     chromium
-    transmission
+    ktorrent
 )
 
 # Pre-accept Microsoft EULA for unattended font installation
@@ -45,6 +45,9 @@ echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select t
 
 sudo apt-get install -y --no-install-recommends \
     "${DEV_TOOLS[@]}" "${THEMES[@]}" "${FONTS[@]}" "${MULTIMEDIA[@]}" "${APPS[@]}"
+
+# Ensure KTorrent is the only BitTorrent client
+sudo apt-get purge -y --auto-remove transmission transmission-gtk transmission-qt transmission-common || true
 
 # Update font cache silently
 fc-cache -fv > /dev/null
@@ -88,6 +91,11 @@ kwriteconfig6 --file dolphinrc --group General --key GlobalViewProps true
 kwriteconfig6 --file dolphinrc --group DetailsMode --key IconSize 16
 kwriteconfig6 --file dolphinrc --group CompactMode --key IconSize 16
 kwriteconfig6 --file dolphinrc --group IconsMode --key IconSize 32
+
+# 6. Default BitTorrent & magnet link handler (KTorrent)
+if command -v xdg-mime &> /dev/null; then
+    xdg-mime default org.kde.ktorrent.desktop application/x-bittorrent x-scheme-handler/magnet || true
+fi
 
 # Apply changes immediately if running inside an active Plasma session
 if pgrep -x "plasmashell" > /dev/null; then

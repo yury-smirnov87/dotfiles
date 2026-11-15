@@ -29,7 +29,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 * **📦 Curated Software Suite**:
   * **Browsers**: Chromium, system web tools.
   * **IDEs & Editors**: IntelliJ IDEA Ultimate, Textadept, WezTerm.
-  * **Communication & Utilities**: Telegram Desktop, Discord, Zoom, Filen Desktop, ExpressVPN, Transmission.
+  * **Communication & Utilities**: Telegram Desktop, Discord, Zoom, Filen Desktop, ExpressVPN, KTorrent.
 
 ---
 
