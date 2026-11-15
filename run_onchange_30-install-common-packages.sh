@@ -15,7 +15,7 @@ MULTIMEDIA=(
     gstreamer1.0-vaapi
     intel-media-va-driver-non-free
 )
-APPS=(chromium transmission)
+APPS=(kde-plasma-desktop chromium transmission)
 
 # Pre-accept Microsoft EULA for unattended font installation
 echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | sudo debconf-set-selections
@@ -25,29 +25,5 @@ sudo apt-get install -y --no-install-recommends \
 
 # Update font cache silently
 fc-cache -fv > /dev/null
-
-# Apply UI settings only if Cinnamon is detected
-if pgrep -x "cinnamon" > /dev/null; then
-    echo "Applying Cinnamon UI preferences..."
-    gsettings set org.cinnamon.theme name "Arc"
-    gsettings set org.cinnamon.desktop.interface gtk-theme "Arc"
-    gsettings set org.cinnamon.desktop.wm.preferences theme "Arc"
-    gsettings set org.cinnamon.desktop.interface icon-theme "Papirus"
-    gsettings set org.cinnamon.desktop.interface cursor-theme "Bibata-Modern-Ice"
-    gsettings set org.gnome.desktop.interface monospace-font-name "JetBrains Mono 11"
-    gsettings set org.cinnamon.desktop.input-sources sources "[('xkb', 'us'), ('xkb', 'ru')]"
-    gsettings set org.cinnamon.desktop.input-sources xkb-options "['grp:alt_shift_toggle']"
-    gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('xkb', 'ru')]"
-    gsettings set org.gnome.desktop.input-sources xkb-options "['grp:alt_shift_toggle']"
-
-    # Configure Nemo file manager view preferences
-    gsettings set org.nemo.preferences default-folder-viewer 'list-view'
-    gsettings set org.nemo.preferences ignore-view-metadata true
-    gsettings set org.nemo.icon-view default-zoom-level 'small'
-    gsettings set org.nemo.compact-view default-zoom-level 'small'
-    gsettings set org.nemo.list-view default-zoom-level 'small'
-else
-    echo "Cinnamon session not detected; skipping UI configuration."
-fi
 
 echo "Finished installing common packages and desktop assets"
