@@ -13,7 +13,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 * **⚡ One-Command Bootstrap**: Complete system initialization via `bootstrap.sh` with automated Bitwarden integration for secrets retrieval.
 * **🔐 Age & Bitwarden Security**: Identity keys and sensitive SSH configuration are encrypted via Age; the secret key is securely stored in Bitwarden Vault.
 * **💻 Dynamic Hardware Detection (`.chezmoi.yaml.tmpl`)**:
-  * **Laptop Detection**: Automatically installs power management (`tlp`, `thermald`, `powertop`), firmware (`firmware-iwlwifi`), and PipeWire/WirePlumber audio stack.
+  * **Laptop Detection**: Automatically installs power management (`tlp`, `thermald`, `powertop`), firmware (`firmware-iwlwifi`), Bluetooth (`bluedevil`), and PipeWire/WirePlumber audio stack.
   * **Nvidia GPU Detection**: Installs proprietary Nvidia drivers (`nvidia-driver-580`, `nvidia-vaapi-driver`), disables `ibt=off` in GRUB, and re-generates kernel configurations.
 * **🐧 XanMod Kernel**: Installs the high-performance `linux-xanmod-lts-x64v3` kernel along with necessary compilation tooling.
 * **🛠️ Developer Infrastructure & Runtimes**:
@@ -23,8 +23,8 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
   * **Google Antigravity CLI**: `agy` executable provisioning.
   * **Docker Engine**: Official upstream Docker repository setup, user group auto-assignment, and `docker-compose-plugin` / `docker-buildx-plugin`.
 * **🎨 Desktop Environment & Themes**:
-  * **KDE Plasma**: Minimal KDE Plasma desktop environment (`kde-plasma-desktop`) configured with **Breeze Light** look-and-feel, keyboard layouts (US + RU with `Alt+Shift` toggle), and Dolphin global view preferences.
-  * **Themes, Icons & Cursor**: Breeze GTK theme (`breeze-gtk-theme`, `kde-config-gtk-style`), Papirus Light icon set, Bibata Modern Ice cursor.
+  * **KDE Plasma**: Minimal KDE Plasma desktop environment (`kde-plasma-desktop`) with SDDM, System Settings, KScreen, PowerDevil, Spectacle, Plasma Network/Audio applets, `kio-extras`/`kio-fuse`, and `xdg-desktop-portal-kde`, configured with **Breeze Light** look-and-feel, keyboard layouts (US + RU with `Alt+Shift` toggle), and Dolphin global view preferences.
+  * **Themes, Icons & Cursor**: Breeze GTK theme (`breeze-gtk-theme`, `kde-config-gtk-style`, `xsettingsd`, `sddm-theme-breeze`), Papirus Light icon set, Bibata Modern Ice cursor.
   * **Fonts & Prompt**: JetBrains Mono Nerd Font paired with [Starship](https://starship.rs/) prompt.
 * **📦 Curated Software Suite**:
   * **Browsers**: Chromium, system web tools.
@@ -137,7 +137,7 @@ flowchart TD
 
 | Category | Component / Tool | Details |
 | :--- | :--- | :--- |
-| **Desktop Environment** | KDE Plasma | Minimal Plasma setup (`kde-plasma-desktop`), Breeze Light theme, US/RU (`Alt+Shift`), Papirus Light icons, Bibata cursor |
+| **Desktop Environment** | KDE Plasma | Minimal Plasma setup (`kde-plasma-desktop`, SDDM, System Settings, KScreen, PowerDevil, Spectacle, Plasma NM/PA), Breeze Light theme, US/RU (`Alt+Shift`), Papirus Light icons, Bibata cursor |
 | **Shell & Terminal** | Bash, WezTerm, Starship | Gruvbox Material theme, JetBrains Mono Nerd Font, WebGPU support |
 | **System Kernel** | XanMod LTS x64v3 | Optional Nvidia drivers (v580) with `ibt=off` GRUB parameter |
 | **Development** | Java, Maven, Node.js, npm, Git, SQLite | SDKMAN! (Java 25 Temurin, Maven 3.9.16), Node.js & npm (Debian APT), Git completion, SQLite3 CLI & DB Browser for SQLite |
