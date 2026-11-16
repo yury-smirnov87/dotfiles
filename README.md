@@ -105,7 +105,7 @@ wget -qO- https://raw.githubusercontent.com/yury-smirnov87/dotfiles/main/bootstr
 
 ### What `bootstrap.sh` Does:
 
-1. Ensures baseline dependencies (`git`) and `~/.local/bin` exist.
+1. Ensures baseline dependencies (`git`, `unzip`) and `~/.local/bin` exist.
 2. Installs `chezmoi` idempotently into `~/.local/bin` using `wget`.
 3. Downloads and installs the **Bitwarden CLI** (`bw`).
 4. Authenticates to Bitwarden using your **Personal API Key** (bypassing 2FA) and unlocks the vault, exporting `BW_SESSION` in the active shell.
