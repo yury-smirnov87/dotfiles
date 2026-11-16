@@ -14,8 +14,15 @@ THEMES=(
     papirus-icon-theme
     bibata-cursor-theme
 )
-FONTS=(fonts-jetbrains-mono fonts-firacode ttf-mscorefonts-installer)
+FONTS=(
+    fonts-jetbrains-mono
+    fonts-firacode
+    fonts-noto-core
+    fonts-noto-color-emoji
+    ttf-mscorefonts-installer
+)
 MULTIMEDIA=(
+    pipewire-audio
     libavcodec-extra
     gstreamer1.0-libav
     gstreamer1.0-plugins-ugly
@@ -25,17 +32,23 @@ MULTIMEDIA=(
 APPS=(
     kde-plasma-desktop
     sddm
+    xserver-xorg
     kwin-x11
     systemsettings
+    kde-config-sddm
     kscreen
     powerdevil
     plasma-nm
     plasma-pa
+    plasma-systemmonitor
     kde-config-screenlocker
     kde-spectacle
+    ark
+    gwenview
     kio-extras
     kio-fuse
     xdg-desktop-portal-kde
+    xdg-desktop-portal-gtk
     chromium
     ktorrent
     okular
