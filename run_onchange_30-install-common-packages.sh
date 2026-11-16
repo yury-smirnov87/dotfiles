@@ -108,6 +108,11 @@ if command -v xdg-mime &> /dev/null; then
     xdg-mime default org.kde.ktorrent.desktop application/x-bittorrent x-scheme-handler/magnet || true
 fi
 
+# 7. Night Light (Always on at 5000K)
+kwriteconfig6 --file kwinrc --group NightColor --key Active true
+kwriteconfig6 --file kwinrc --group NightColor --key Mode Constant
+kwriteconfig6 --file kwinrc --group NightColor --key NightTemperature 5000
+
 # Apply changes immediately if running inside an active Plasma session
 if pgrep -x "plasmashell" > /dev/null; then
     plasma-apply-colorscheme BreezeLight || true
