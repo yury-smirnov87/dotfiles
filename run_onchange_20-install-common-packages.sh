@@ -143,6 +143,22 @@ fi
 kwriteconfig6 --file kdeglobals --group General --key TerminalApplication "wezterm"
 kwriteconfig6 --file kdeglobals --group General --key TerminalService "org.wezfurlong.wezterm.desktop"
 
+# 11. Plasma Panel (Auto-hide, non-floating)
+PLASMA_SHELL_RC="$HOME/.config/plasmashellrc"
+PANEL_GROUPS=()
+if [ -f "$PLASMA_SHELL_RC" ]; then
+    while IFS= read -r panel_group; do
+        PANEL_GROUPS+=("$panel_group")
+    done < <(grep -oE '^\[PlasmaViews\]\[Panel [0-9]+\]$' "$PLASMA_SHELL_RC" | sed -E 's/^\[PlasmaViews\]\[(.*)\]$/\1/')
+fi
+if [ ${#PANEL_GROUPS[@]} -eq 0 ]; then
+    PANEL_GROUPS=("Panel 2")
+fi
+for panel_group in "${PANEL_GROUPS[@]}"; do
+    kwriteconfig6 --file plasmashellrc --group PlasmaViews --group "$panel_group" --key floating 0
+    kwriteconfig6 --file plasmashellrc --group PlasmaViews --group "$panel_group" --key panelVisibility 1
+done
+
 # Apply changes immediately if running inside an active Plasma session
 if pgrep -x "plasmashell" > /dev/null; then
     plasma-apply-colorscheme BreezeLight || true
@@ -156,6 +172,7 @@ if pgrep -x "plasmashell" > /dev/null; then
     if command -v dbus-send &> /dev/null; then
         dbus-send --session --type=signal /Layouts org.kde.keyboard.reloadConfig || true
         dbus-send --session --type=method_call --dest=org.kde.KWin /KWin org.kde.KWin.reconfigure || true
+        dbus-send --session --type=method_call --dest=org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:panels().forEach(p => { p.hiding = "autohide"; p.floating = false; });' || true
     fi
 fi
 
