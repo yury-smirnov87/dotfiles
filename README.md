@@ -1,6 +1,6 @@
 # Yury Smirnov's Dotfiles
 
-Personal Linux development environment and dotfiles repository for Debian-based systems (optimized for Debian Trixie/Testing with Linux Cinnamon desktop), managed using [chezmoi](https://www.chezmoi.io/) and secured with [Age](https://github.com/FiloSottile/age) & [Bitwarden](https://bitwarden.com/).
+Personal Linux development environment and dotfiles repository for Debian-based systems (optimized for Debian Trixie/Testing with KDE Plasma desktop), managed using [chezmoi](https://www.chezmoi.io/) and secured with [Age](https://github.com/FiloSottile/age) & [Bitwarden](https://bitwarden.com/).
 
 ---
 
@@ -13,7 +13,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 * **⚡ One-Command Bootstrap**: Complete system initialization via `bootstrap.sh` with automated Bitwarden integration for secrets retrieval.
 * **🔐 Age & Bitwarden Security**: Identity keys and sensitive SSH configuration are encrypted via Age; the secret key is securely stored in Bitwarden Vault.
 * **💻 Dynamic Hardware Detection (`.chezmoi.yaml.tmpl`)**:
-  * **Laptop Detection**: Automatically installs power management (`tlp`, `thermald`, `powertop`), firmware (`firmware-iwlwifi`), and PipeWire/WirePlumber audio stack.
+  * **Laptop Detection**: Automatically installs power management (`tlp`, `thermald`, `powertop`), firmware (`firmware-iwlwifi`), Bluetooth (`bluedevil`), and PipeWire/WirePlumber audio stack.
   * **Nvidia GPU Detection**: Installs proprietary Nvidia drivers (`nvidia-driver-580`, `nvidia-vaapi-driver`), disables `ibt=off` in GRUB, and re-generates kernel configurations.
 * **🐧 XanMod Kernel**: Installs the high-performance `linux-xanmod-lts-x64v3` kernel along with necessary compilation tooling.
 * **🛠️ Developer Infrastructure & Runtimes**:
@@ -22,14 +22,14 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
   * **SQLite**: SQLite 3 database CLI tooling and DB Browser for SQLite (`sqlitebrowser`) from Debian repository.
   * **Google Antigravity CLI**: `agy` executable provisioning.
   * **Docker Engine**: Official upstream Docker repository setup, user group auto-assignment, and `docker-compose-plugin` / `docker-buildx-plugin`.
-* **🎨 Desktop Customization & Themes**:
-  * **GTK & Icons**: Arc theme, Papirus icon set, Bibata Modern Ice cursor.
-  * **Cinnamon & Nemo**: Pre-configured desktop keybindings, input sources (US + RU with `Alt+Shift` toggle), font sizes, and Nemo list-view preferences.
+* **🎨 Desktop Environment & Themes**:
+  * **KDE Plasma**: Minimal KDE Plasma desktop environment (`kde-plasma-desktop`) with SDDM, Xorg fallback, System Settings, KScreen, PowerDevil, Spectacle, System Monitor, Ark, Gwenview, Plasma Network/Audio applets (`pipewire-audio`), `kio-extras`/`kio-fuse`, and `xdg-desktop-portal-kde`/`gtk`, configured with **Breeze Light** look-and-feel, keyboard layouts (US + RU with `Alt+Shift` toggle), and Dolphin global view preferences.
+  * **Themes, Icons & Cursor**: Breeze GTK theme (`breeze-gtk-theme`, `kde-config-gtk-style`, `xsettingsd`, `sddm-theme-breeze`), Papirus Light icon set, Bibata Modern Ice cursor.
   * **Fonts & Prompt**: JetBrains Mono Nerd Font paired with [Starship](https://starship.rs/) prompt.
 * **📦 Curated Software Suite**:
-  * **Browsers**: Chromium, system web tools.
+  * **Browsers**: Chromium, Firefox ESR, system web tools.
   * **IDEs & Editors**: IntelliJ IDEA Ultimate, Textadept, WezTerm.
-  * **Communication & Utilities**: Telegram Desktop, Discord, Zoom, Filen Desktop, ExpressVPN, Transmission.
+  * **Communication & Utilities**: Telegram Desktop, Discord, Zoom, Filen Desktop, ExpressVPN, KTorrent, Okular.
 
 ---
 
@@ -46,7 +46,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 ├── run_onchange_00-add-repositories.sh    # Configures APT repos (XanMod, WezTerm, Docker, non-free)
 ├── run_onchange_10-install-xanmod.sh.tmpl # Installs XanMod kernel & Nvidia drivers (if present)
 ├── run_onchange_20-install-laptop-packages.sh.tmpl # Configures laptop power & audio (if laptop)
-├── run_onchange_30-install-common-packages.sh      # Installs common CLI tools, GTK themes & UI settings
+├── run_onchange_30-install-common-packages.sh      # Installs common CLI tools, KDE Plasma & themes
 ├── run_onchange_40-install-antigravity.sh # Google Antigravity CLI installer
 ├── run_onchange_40-install-discord.sh     # Discord .deb installer
 ├── run_onchange_40-install-docker.sh      # Docker Engine & plugin setup
@@ -65,7 +65,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 │   └── init.lua                           # Textadept configuration (~/.textadept/init.lua)
 ├── dot_local/share/applications/          # Custom Desktop Launchers (.desktop files)
 │   ├── intellij.desktop
-│   └── textadept-gtk.desktop
+│   └── textadept.desktop
 └── private_dot_ssh/                       # Encrypted SSH configuration and keys
     ├── config.tmpl
     ├── encrypted_private_id_ed25519.age   # Age-encrypted private SSH key
@@ -105,7 +105,7 @@ wget -qO- https://raw.githubusercontent.com/yury-smirnov87/dotfiles/main/bootstr
 
 ### What `bootstrap.sh` Does:
 
-1. Ensures baseline dependencies (`git`) and `~/.local/bin` exist.
+1. Ensures baseline dependencies (`git`, `unzip`) and `~/.local/bin` exist.
 2. Installs `chezmoi` idempotently into `~/.local/bin` using `wget`.
 3. Downloads and installs the **Bitwarden CLI** (`bw`).
 4. Authenticates to Bitwarden using your **Personal API Key** (bypassing 2FA) and unlocks the vault, exporting `BW_SESSION` in the active shell.
@@ -127,7 +127,7 @@ flowchart TD
     C --> D[run_onchange_00: APT Repos & GPG Keys]
     D --> E[run_onchange_10: XanMod Kernel & Nvidia]
     E --> F[run_onchange_20: Laptop Firmware & TLP]
-    F --> G[run_onchange_30: Common Packages & Cinnamon UI]
+    F --> G[run_onchange_30: Common Packages & KDE Plasma]
     G --> H[run_onchange_40: Applications & SDKs]
     H --> I[run_onchange_50: Nerd Fonts & Starship Prompt]
     I --> J[Apply Dotfiles & Configurations]
@@ -137,11 +137,12 @@ flowchart TD
 
 | Category | Component / Tool | Details |
 | :--- | :--- | :--- |
+| **Desktop Environment** | KDE Plasma | Minimal Plasma setup (`kde-plasma-desktop`, SDDM, System Settings, KScreen, PowerDevil, Spectacle, System Monitor, Ark, Gwenview, Plasma NM/PA, PipeWire), Breeze Light theme, US/RU (`Alt+Shift`), Papirus Light icons, Bibata cursor |
 | **Shell & Terminal** | Bash, WezTerm, Starship | Gruvbox Material theme, JetBrains Mono Nerd Font, WebGPU support |
 | **System Kernel** | XanMod LTS x64v3 | Optional Nvidia drivers (v580) with `ibt=off` GRUB parameter |
 | **Development** | Java, Maven, Node.js, npm, Git, SQLite | SDKMAN! (Java 25 Temurin, Maven 3.9.16), Node.js & npm (Debian APT), Git completion, SQLite3 CLI & DB Browser for SQLite |
 | **IDEs & Editors** | IntelliJ IDEA, Textadept | Clean desktop integration, `/opt` installations, custom keybindings |
-| **Browsers** | Chromium | Debian repository package |
+| **Browsers** | Chromium, Firefox ESR | Debian repository packages |
 | **Containers** | Docker Engine | `docker-ce`, `docker-compose-plugin`, auto group configuration |
 | **Productivity / Media** | Discord, Telegram, Zoom, Filen | Official `.deb` packages & Linux tarballs |
 | **VPN & Security** | ExpressVPN, Bitwarden, Age | CLI vault access & encrypted SSH keys |

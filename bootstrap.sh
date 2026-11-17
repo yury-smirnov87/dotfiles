@@ -5,10 +5,17 @@ set -e
 mkdir -p "$HOME/.local/bin"
 export PATH="$HOME/.local/bin:$PATH"
 
-# Ensure prerequisite (git) is installed
-if ! command -v git &> /dev/null; then
-    echo "Missing required prerequisite: git"
-    echo "Installing git via apt-get..."
+# Ensure prerequisites (git, unzip) are installed
+MISSING_PKGS=()
+for cmd in git unzip; do
+    if ! command -v "$cmd" &> /dev/null; then
+        MISSING_PKGS+=("$cmd")
+    fi
+done
+
+if [ ${#MISSING_PKGS[@]} -gt 0 ]; then
+    echo "Missing required prerequisites: ${MISSING_PKGS[*]}"
+    echo "Installing via apt-get..."
 
     SUDO=""
     if [ "$EUID" -ne 0 ]; then
@@ -20,7 +27,8 @@ if ! command -v git &> /dev/null; then
         fi
     fi
 
-    $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y git
+    $SUDO DEBIAN_FRONTEND=noninteractive apt-get update
+    $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y "${MISSING_PKGS[@]}"
 fi
 
 # Idempotently install chezmoi

@@ -24,6 +24,14 @@ else
 fi
 
 sudo mkdir -p /usr/local/bin
-sudo ln -sf "$INSTALL_DIR/textadept-gtk" /usr/local/bin/textadept
+sudo ln -sf "$INSTALL_DIR/textadept" /usr/local/bin/textadept
+
+if command -v update-desktop-database &> /dev/null && [ -d "$HOME/.local/share/applications" ]; then
+    update-desktop-database "$HOME/.local/share/applications"
+fi
+
+if command -v xdg-mime &> /dev/null; then
+    xdg-mime default textadept.desktop text/plain
+fi
 
 echo "Finished installing Textadept"
