@@ -172,7 +172,7 @@ fi
 kwriteconfig6 --file kdeglobals --group General --key TerminalApplication "wezterm"
 kwriteconfig6 --file kdeglobals --group General --key TerminalService "org.wezfurlong.wezterm.desktop"
 
-# 11. Plasma Panel (Auto-hide, non-floating)
+# 11. Plasma Panel (Auto-hide, non-floating, unpin Discover)
 PLASMA_SHELL_RC="$HOME/.config/plasmashellrc"
 PANEL_GROUPS=()
 if [ -f "$PLASMA_SHELL_RC" ]; then
@@ -188,6 +188,35 @@ for panel_group in "${PANEL_GROUPS[@]}"; do
     kwriteconfig6 --file plasmashellrc --group PlasmaViews --group "$panel_group" --key panelVisibility 1
 done
 
+APPLETS_RC="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
+if [ -f "$APPLETS_RC" ]; then
+    while IFS=':' read -r containment_id applet_id; do
+        [ -z "$containment_id" ] || [ -z "$applet_id" ] && continue
+        current_launchers=$(kreadconfig6 --file plasma-org.kde.plasma.desktop-appletsrc \
+            --group Containments --group "$containment_id" --group Applets --group "$applet_id" \
+            --group Configuration --group General --key launchers 2>/dev/null || true)
+        if [ -z "$current_launchers" ]; then
+            current_launchers="applications:systemsettings.desktop,applications:org.kde.discover.desktop,preferred://filemanager,preferred://browser"
+        fi
+        new_launchers=$(echo "$current_launchers" | tr ',' '\n' | grep -vxE 'applications:org\.kde\.discover\.desktop|org\.kde\.discover\.desktop' | paste -sd ',' -)
+        kwriteconfig6 --file plasma-org.kde.plasma.desktop-appletsrc \
+            --group Containments --group "$containment_id" --group Applets --group "$applet_id" \
+            --group Configuration --group General --key launchers "$new_launchers"
+    done < <(awk '
+        /^\[Containments\]\[[0-9]+\]\[Applets\]\[[0-9]+\]$/ {
+            gsub(/\[Containments\]\[|\]\[Applets\]\[|\]/, ":")
+            sub(/^:/, ""); sub(/:$/, "")
+            key = $0
+            next
+        }
+        /^\[/ { key = "" }
+        key != "" && /^plugin=org\.kde\.plasma\.(icontasks|taskmanager)$/ {
+            print key
+            key = ""
+        }
+    ' "$APPLETS_RC")
+fi
+
 # Apply changes immediately if running inside an active Plasma session
 if pgrep -x "plasmashell" > /dev/null; then
     plasma-apply-colorscheme BreezeLight || true
@@ -201,7 +230,7 @@ if pgrep -x "plasmashell" > /dev/null; then
     if command -v dbus-send &> /dev/null; then
         dbus-send --session --type=signal /Layouts org.kde.keyboard.reloadConfig || true
         dbus-send --session --type=method_call --dest=org.kde.KWin /KWin org.kde.KWin.reconfigure || true
-        dbus-send --session --type=method_call --dest=org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:panels().forEach(p => { p.hiding = "autohide"; p.floating = false; });' || true
+        dbus-send --session --type=method_call --dest=org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:panels().forEach(p => { p.hiding = "autohide"; p.floating = false; p.widgets().forEach(w => { if (w.type === "org.kde.plasma.icontasks" || w.type === "org.kde.plasma.taskmanager") { w.currentConfigGroup = ["General"]; let raw = w.readConfig("launchers", "applications:systemsettings.desktop,applications:org.kde.discover.desktop,preferred://filemanager,preferred://browser"); let arr = Array.isArray(raw) ? raw : String(raw || "").split(","); let filtered = arr.map(s => String(s).trim()).filter(s => s && s !== "applications:org.kde.discover.desktop" && s !== "org.kde.discover.desktop"); w.writeConfig("launchers", filtered.join(",")); } }); });' || true
     fi
 fi
 
