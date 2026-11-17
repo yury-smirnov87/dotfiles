@@ -94,6 +94,9 @@ if command -v gsettings &> /dev/null; then
         gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Ice" || true
         gsettings set org.gnome.desktop.interface cursor-size 24 || true
         gsettings set org.gnome.desktop.interface monospace-font-name "JetBrains Mono 11" || true
+        gsettings set org.gnome.desktop.interface font-antialiasing "rgba" || true
+        gsettings set org.gnome.desktop.interface font-hinting "full" || true
+        gsettings set org.gnome.desktop.interface font-rgba-order "rgb" || true
     }
     if [ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
         apply_gsettings

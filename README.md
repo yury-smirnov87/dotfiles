@@ -63,6 +63,9 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 ├── dot_wezterm.lua                        # WezTerm configuration (~/.wezterm.lua)
 ├── dot_textadept/
 │   └── init.lua                           # Textadept configuration (~/.textadept/init.lua)
+├── dot_config/
+│   └── fontconfig/
+│       └── fonts.conf                     # Fontconfig RGB subpixel & full hinting (~/.config/fontconfig/fonts.conf)
 ├── dot_local/share/applications/          # Custom Desktop Launchers (.desktop files)
 │   ├── intellij.desktop
 │   └── textadept.desktop
