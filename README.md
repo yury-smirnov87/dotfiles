@@ -27,7 +27,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
   * **Themes, Icons & Cursor**: Breeze GTK theme (`breeze-gtk-theme`, `kde-config-gtk-style`, `xsettingsd`, `sddm-theme-breeze`), Papirus Light icon set, Bibata Modern Ice cursor.
   * **Fonts & Prompt**: JetBrains Mono Nerd Font paired with [Starship](https://starship.rs/) prompt.
 * **📦 Curated Software Suite**:
-  * **Browsers**: Chromium, system web tools.
+  * **Browsers**: Chromium, Firefox ESR, system web tools.
   * **IDEs & Editors**: IntelliJ IDEA Ultimate, Textadept, WezTerm.
   * **Communication & Utilities**: Telegram Desktop, Discord, Zoom, Filen Desktop, ExpressVPN, KTorrent, Okular.
 
@@ -142,7 +142,7 @@ flowchart TD
 | **System Kernel** | XanMod LTS x64v3 | Optional Nvidia drivers (v580) with `ibt=off` GRUB parameter |
 | **Development** | Java, Maven, Node.js, npm, Git, SQLite | SDKMAN! (Java 25 Temurin, Maven 3.9.16), Node.js & npm (Debian APT), Git completion, SQLite3 CLI & DB Browser for SQLite |
 | **IDEs & Editors** | IntelliJ IDEA, Textadept | Clean desktop integration, `/opt` installations, custom keybindings |
-| **Browsers** | Chromium | Debian repository package |
+| **Browsers** | Chromium, Firefox ESR | Debian repository packages |
 | **Containers** | Docker Engine | `docker-ce`, `docker-compose-plugin`, auto group configuration |
 | **Productivity / Media** | Discord, Telegram, Zoom, Filen | Official `.deb` packages & Linux tarballs |
 | **VPN & Security** | ExpressVPN, Bitwarden, Age | CLI vault access & encrypted SSH keys |

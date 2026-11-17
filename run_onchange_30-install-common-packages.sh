@@ -50,6 +50,7 @@ APPS=(
     xdg-desktop-portal-kde
     xdg-desktop-portal-gtk
     chromium
+    firefox-esr
     ktorrent
     okular
 )
