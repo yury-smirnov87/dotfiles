@@ -114,13 +114,17 @@ kwriteconfig6 --file kxkbrc --group Layout --key ResetOldOptions true
 # 5. Dolphin File Manager preferences (global view properties, split view, details mode, hidden files, maximized)
 kwriteconfig6 --file dolphinrc --group General --key GlobalViewProps true
 kwriteconfig6 --file dolphinrc --group General --key SplitView true
+kwriteconfig6 --file dolphinrc --group General --key RememberOpenedTabs false
+kwriteconfig6 --file dolphinrc --group FoldersPanel --key HiddenFilesShown true
 kwriteconfig6 --file dolphinrc --group DetailsMode --key IconSize 16
 kwriteconfig6 --file dolphinrc --group CompactMode --key IconSize 16
 kwriteconfig6 --file dolphinrc --group IconsMode --key IconSize 32
 
+rm -rf "$HOME/.local/share/dolphin/view_properties/global"
 mkdir -p "$HOME/.local/share/dolphin/view_properties/global"
 kwriteconfig6 --file "$HOME/.local/share/dolphin/view_properties/global/.directory" --group Dolphin --key ViewMode 1
-kwriteconfig6 --file "$HOME/.local/share/dolphin/view_properties/global/.directory" --group Dolphin --key HiddenFilesShown true
+kwriteconfig6 --file "$HOME/.local/share/dolphin/view_properties/global/.directory" --group Settings --key HiddenFilesShown true
+rm -f "$HOME/.config/session/dolphin_"*
 
 # Open Dolphin maximized via KWin window rule (resolution-independent)
 RULE_ID="dolphin-maximized"
