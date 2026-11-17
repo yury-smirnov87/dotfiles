@@ -84,12 +84,19 @@ kwriteconfig6 --file kdeglobals --group General --key fixed "JetBrains Mono,11,-
 
 # 3. GTK application consistency under KDE (Breeze Light)
 if command -v gsettings &> /dev/null; then
-    gsettings set org.gnome.desktop.interface gtk-theme "Breeze" || true
-    gsettings set org.gnome.desktop.interface color-scheme "prefer-light" || true
-    gsettings set org.gnome.desktop.interface icon-theme "Papirus-Light" || true
-    gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Ice" || true
-    gsettings set org.gnome.desktop.interface cursor-size 24 || true
-    gsettings set org.gnome.desktop.interface monospace-font-name "JetBrains Mono 11" || true
+    apply_gsettings() {
+        gsettings set org.gnome.desktop.interface gtk-theme "Breeze" || true
+        gsettings set org.gnome.desktop.interface color-scheme "prefer-light" || true
+        gsettings set org.gnome.desktop.interface icon-theme "Papirus-Light" || true
+        gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Ice" || true
+        gsettings set org.gnome.desktop.interface cursor-size 24 || true
+        gsettings set org.gnome.desktop.interface monospace-font-name "JetBrains Mono 11" || true
+    }
+    if [ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
+        apply_gsettings
+    elif command -v dbus-run-session &> /dev/null; then
+        dbus-run-session -- bash -c "$(declare -f apply_gsettings); apply_gsettings" || true
+    fi
 fi
 
 # 4. Keyboard Layouts (US + RU) with Alt+Shift toggle

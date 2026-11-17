@@ -4,6 +4,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 echo "Configuring additional repositories"
 
+sudo apt-get update
 sudo apt-get install -y wget gpg lsb-release sed
 
 # 1. Update main sources to include contrib/non-free

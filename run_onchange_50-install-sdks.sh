@@ -8,7 +8,7 @@ echo "Installing SDKMan and sdks"
 if [[ ! -f "$HOME/.sdkman/bin/sdkman-init.sh" ]]; then
   echo 'SDKMan not found, installing'
 
-  curl -s "https://get.sdkman.io" | bash
+  curl -s "https://get.sdkman.io?rcupdate=false" | bash
 fi
 
 source "$HOME/.sdkman/bin/sdkman-init.sh"

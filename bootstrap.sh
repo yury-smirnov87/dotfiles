@@ -5,13 +5,16 @@ set -e
 mkdir -p "$HOME/.local/bin"
 export PATH="$HOME/.local/bin:$PATH"
 
-# Ensure prerequisites (git, unzip) are installed
+# Ensure prerequisites (git, unzip, pciutils for lspci hardware detection) are installed
 MISSING_PKGS=()
 for cmd in git unzip; do
     if ! command -v "$cmd" &> /dev/null; then
         MISSING_PKGS+=("$cmd")
     fi
 done
+if ! command -v lspci &> /dev/null; then
+    MISSING_PKGS+=("pciutils")
+fi
 
 if [ ${#MISSING_PKGS[@]} -gt 0 ]; then
     echo "Missing required prerequisites: ${MISSING_PKGS[*]}"
