@@ -117,6 +117,12 @@ kwriteconfig6 --file kwinrc --group NightColor --key NightTemperature 5000
 # 8. Mouse wheel scroll lines for Qt/KDE apps
 kwriteconfig6 --file kdeglobals --group KDE --key WheelScrollLines 6
 
+# 9. Default Web Browser (Firefox ESR)
+kwriteconfig6 --file kdeglobals --group General --key BrowserApplication "firefox-esr.desktop"
+if command -v xdg-settings &> /dev/null; then
+    xdg-settings set default-web-browser firefox-esr.desktop || true
+fi
+
 # Apply changes immediately if running inside an active Plasma session
 if pgrep -x "plasmashell" > /dev/null; then
     plasma-apply-colorscheme BreezeLight || true
