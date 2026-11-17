@@ -111,11 +111,36 @@ kwriteconfig6 --file kxkbrc --group Layout --key LayoutList "us,ru"
 kwriteconfig6 --file kxkbrc --group Layout --key Options "grp:alt_shift_toggle"
 kwriteconfig6 --file kxkbrc --group Layout --key ResetOldOptions true
 
-# 5. Dolphin File Manager preferences (global view properties & small icon sizes)
+# 5. Dolphin File Manager preferences (global view properties, split view, details mode, hidden files, maximized)
 kwriteconfig6 --file dolphinrc --group General --key GlobalViewProps true
+kwriteconfig6 --file dolphinrc --group General --key SplitView true
 kwriteconfig6 --file dolphinrc --group DetailsMode --key IconSize 16
 kwriteconfig6 --file dolphinrc --group CompactMode --key IconSize 16
 kwriteconfig6 --file dolphinrc --group IconsMode --key IconSize 32
+
+mkdir -p "$HOME/.local/share/dolphin/view_properties/global"
+kwriteconfig6 --file "$HOME/.local/share/dolphin/view_properties/global/.directory" --group Dolphin --key ViewMode 1
+kwriteconfig6 --file "$HOME/.local/share/dolphin/view_properties/global/.directory" --group Dolphin --key HiddenFilesShown true
+
+# Open Dolphin maximized via KWin window rule (resolution-independent)
+RULE_ID="dolphin-maximized"
+EXISTING_RULES=$(kreadconfig6 --file kwinrulesrc --group General --key rules 2>/dev/null || true)
+if [ -z "$EXISTING_RULES" ]; then
+    kwriteconfig6 --file kwinrulesrc --group General --key count 1
+    kwriteconfig6 --file kwinrulesrc --group General --key rules "$RULE_ID"
+elif ! echo ",$EXISTING_RULES," | grep -q ",$RULE_ID,"; then
+    NEW_RULES="${EXISTING_RULES},${RULE_ID}"
+    NEW_COUNT=$(echo "$NEW_RULES" | awk -F',' '{print NF}')
+    kwriteconfig6 --file kwinrulesrc --group General --key count "$NEW_COUNT"
+    kwriteconfig6 --file kwinrulesrc --group General --key rules "$NEW_RULES"
+fi
+kwriteconfig6 --file kwinrulesrc --group "$RULE_ID" --key Description "Maximize Dolphin"
+kwriteconfig6 --file kwinrulesrc --group "$RULE_ID" --key wmclass "org.kde.dolphin"
+kwriteconfig6 --file kwinrulesrc --group "$RULE_ID" --key wmclassmatch 1
+kwriteconfig6 --file kwinrulesrc --group "$RULE_ID" --key maximizehoriz true
+kwriteconfig6 --file kwinrulesrc --group "$RULE_ID" --key maximizehorizrule 3
+kwriteconfig6 --file kwinrulesrc --group "$RULE_ID" --key maximizevert true
+kwriteconfig6 --file kwinrulesrc --group "$RULE_ID" --key maximizevertrule 3
 
 # 6. Default BitTorrent & magnet link handler (KTorrent)
 if command -v xdg-mime &> /dev/null; then
