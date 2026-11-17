@@ -21,4 +21,13 @@ else
     echo "Git autocompletions file already present."
 fi
 
+mkdir -p "$HOME/.ssh"
+chmod 700 "$HOME/.ssh"
+KNOWN_HOSTS_FILE="$HOME/.ssh/known_hosts"
+if ! ssh-keygen -F github.com -f "$KNOWN_HOSTS_FILE" &> /dev/null; then
+    echo "Adding github.com SSH host key to $KNOWN_HOSTS_FILE"
+    ssh-keyscan -t ed25519 github.com >> "$KNOWN_HOSTS_FILE"
+    chmod 644 "$KNOWN_HOSTS_FILE"
+fi
+
 echo "Finished installing Git"
