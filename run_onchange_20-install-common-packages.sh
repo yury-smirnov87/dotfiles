@@ -172,7 +172,7 @@ fi
 kwriteconfig6 --file kdeglobals --group General --key TerminalApplication "wezterm"
 kwriteconfig6 --file kdeglobals --group General --key TerminalService "org.wezfurlong.wezterm.desktop"
 
-# 11. Plasma Panel (Auto-hide, non-floating, unpin Discover, pin preferred terminal)
+# 11. Plasma Panel (Auto-hide, non-floating, unpin Discover, pin WezTerm)
 PLASMA_SHELL_RC="$HOME/.config/plasmashellrc"
 PANEL_GROUPS=()
 if [ -f "$PLASMA_SHELL_RC" ]; then
@@ -198,9 +198,9 @@ if [ -f "$APPLETS_RC" ]; then
         if [ -z "$current_launchers" ]; then
             current_launchers="applications:systemsettings.desktop,applications:org.kde.discover.desktop,preferred://filemanager,preferred://browser"
         fi
-        new_launchers=$(echo "$current_launchers" | tr ',' '\n' | grep -vxE 'applications:org\.kde\.discover\.desktop|org\.kde\.discover\.desktop' | paste -sd ',' -)
-        if ! echo ",$new_launchers," | grep -qE ',(preferred://terminal|applications:org\.wezfurlong\.wezterm\.desktop),'; then
-            new_launchers="${new_launchers:+$new_launchers,}preferred://terminal"
+        new_launchers=$(echo "$current_launchers" | tr ',' '\n' | grep -vxE 'applications:org\.kde\.discover\.desktop|org\.kde\.discover\.desktop|preferred://terminal' | paste -sd ',' -)
+        if ! echo ",$new_launchers," | grep -q ',applications:org\.wezfurlong\.wezterm\.desktop,'; then
+            new_launchers="${new_launchers:+$new_launchers,}applications:org.wezfurlong.wezterm.desktop"
         fi
         kwriteconfig6 --file plasma-org.kde.plasma.desktop-appletsrc \
             --group Containments --group "$containment_id" --group Applets --group "$applet_id" \
@@ -233,7 +233,7 @@ if pgrep -x "plasmashell" > /dev/null; then
     if command -v dbus-send &> /dev/null; then
         dbus-send --session --type=signal /Layouts org.kde.keyboard.reloadConfig || true
         dbus-send --session --type=method_call --dest=org.kde.KWin /KWin org.kde.KWin.reconfigure || true
-        dbus-send --session --type=method_call --dest=org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:panels().forEach(p => { p.hiding = "autohide"; p.floating = false; p.widgets().forEach(w => { if (w.type === "org.kde.plasma.icontasks" || w.type === "org.kde.plasma.taskmanager") { w.currentConfigGroup = ["General"]; let raw = w.readConfig("launchers", "applications:systemsettings.desktop,applications:org.kde.discover.desktop,preferred://filemanager,preferred://browser"); let arr = Array.isArray(raw) ? raw : String(raw || "").split(","); let filtered = arr.map(s => String(s).trim()).filter(s => s && s !== "applications:org.kde.discover.desktop" && s !== "org.kde.discover.desktop"); if (!filtered.includes("preferred://terminal") && !filtered.includes("applications:org.wezfurlong.wezterm.desktop")) { filtered.push("preferred://terminal"); } w.writeConfig("launchers", filtered.join(",")); } }); });' || true
+        dbus-send --session --type=method_call --dest=org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:panels().forEach(p => { p.hiding = "autohide"; p.floating = false; p.widgets().forEach(w => { if (w.type === "org.kde.plasma.icontasks" || w.type === "org.kde.plasma.taskmanager") { w.currentConfigGroup = ["General"]; let raw = w.readConfig("launchers", "applications:systemsettings.desktop,applications:org.kde.discover.desktop,preferred://filemanager,preferred://browser"); let arr = Array.isArray(raw) ? raw : String(raw || "").split(","); let filtered = arr.map(s => String(s).trim()).filter(s => s && s !== "applications:org.kde.discover.desktop" && s !== "org.kde.discover.desktop" && s !== "preferred://terminal"); if (!filtered.includes("applications:org.wezfurlong.wezterm.desktop")) { filtered.push("applications:org.wezfurlong.wezterm.desktop"); } w.writeConfig("launchers", filtered.join(",")); } }); });' || true
     fi
 fi
 
