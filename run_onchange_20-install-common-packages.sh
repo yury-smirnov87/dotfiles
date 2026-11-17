@@ -11,6 +11,8 @@ THEMES=(
     kde-config-gtk-style
     xsettingsd
     sddm-theme-breeze
+    sddm-theme-debian-breeze
+    desktop-base
     grub-theme-breeze
     papirus-icon-theme
     bibata-cursor-theme
