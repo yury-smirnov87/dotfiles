@@ -11,6 +11,7 @@ THEMES=(
     kde-config-gtk-style
     xsettingsd
     sddm-theme-breeze
+    grub-theme-breeze
     papirus-icon-theme
     bibata-cursor-theme
 )
@@ -150,6 +151,37 @@ if pgrep -x "plasmashell" > /dev/null; then
     if command -v dbus-send &> /dev/null; then
         dbus-send --session --type=signal /Layouts org.kde.keyboard.reloadConfig || true
         dbus-send --session --type=method_call --dest=org.kde.KWin /KWin org.kde.KWin.reconfigure || true
+    fi
+fi
+
+# 11. Configure graphical GRUB theme (Breeze)
+GRUB_FILE="/etc/default/grub"
+BREEZE_THEME=""
+for candidate in /boot/grub/themes/breeze/theme.txt /usr/share/grub/themes/breeze/theme.txt; do
+    if [ -f "$candidate" ]; then
+        BREEZE_THEME="$candidate"
+        break
+    fi
+done
+
+if [ -f "$GRUB_FILE" ] && [ -n "$BREEZE_THEME" ]; then
+    echo "Configuring GRUB Breeze graphical theme..."
+    sudo sed -i -E 's/^GRUB_TERMINAL=console/#GRUB_TERMINAL=console/' "$GRUB_FILE"
+
+    if grep -qE '^#?GRUB_GFXMODE=' "$GRUB_FILE"; then
+        sudo sed -i -E 's/^#?GRUB_GFXMODE=.*/GRUB_GFXMODE=auto/' "$GRUB_FILE"
+    else
+        echo 'GRUB_GFXMODE=auto' | sudo tee -a "$GRUB_FILE" > /dev/null
+    fi
+
+    if grep -qE '^#?GRUB_THEME=' "$GRUB_FILE"; then
+        sudo sed -i -E "s|^#?GRUB_THEME=.*|GRUB_THEME=\"$BREEZE_THEME\"|" "$GRUB_FILE"
+    else
+        echo "GRUB_THEME=\"$BREEZE_THEME\"" | sudo tee -a "$GRUB_FILE" > /dev/null
+    fi
+
+    if command -v update-grub &> /dev/null; then
+        sudo update-grub
     fi
 fi
 

@@ -24,7 +24,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
   * **Docker Engine**: Official upstream Docker repository setup, user group auto-assignment, and `docker-compose-plugin` / `docker-buildx-plugin`.
 * **🎨 Desktop Environment & Themes**:
   * **KDE Plasma**: Minimal KDE Plasma desktop environment (`kde-plasma-desktop`) with SDDM, Xorg fallback, System Settings, KScreen, PowerDevil, Spectacle, System Monitor, Ark, Gwenview, Plasma Network/Audio applets (`pipewire-audio`), `kio-extras`/`kio-fuse`, and `xdg-desktop-portal-kde`/`gtk`, configured with **Breeze Light** look-and-feel, keyboard layouts (US + RU with `Alt+Shift` toggle), and Dolphin global view preferences.
-  * **Themes, Icons & Cursor**: Breeze GTK theme (`breeze-gtk-theme`, `kde-config-gtk-style`, `xsettingsd`, `sddm-theme-breeze`), Papirus Light icon set, Bibata Modern Ice cursor.
+  * **Themes, Icons & Cursor**: Breeze GTK theme (`breeze-gtk-theme`, `kde-config-gtk-style`, `xsettingsd`, `sddm-theme-breeze`, `grub-theme-breeze`), Papirus Light icon set, Bibata Modern Ice cursor.
   * **Fonts & Prompt**: JetBrains Mono Nerd Font paired with [Starship](https://starship.rs/) prompt.
 * **📦 Curated Software Suite**:
   * **Browsers**: Chromium, Firefox ESR, system web tools.
