@@ -123,6 +123,13 @@ if command -v xdg-settings &> /dev/null; then
     xdg-settings set default-web-browser firefox-esr.desktop || true
 fi
 
+# 10. Default Terminal Emulator (WezTerm - system-wide & KDE)
+if [ -x /usr/bin/open-wezterm-here ]; then
+    sudo update-alternatives --set x-terminal-emulator /usr/bin/open-wezterm-here || true
+fi
+kwriteconfig6 --file kdeglobals --group General --key TerminalApplication "wezterm"
+kwriteconfig6 --file kdeglobals --group General --key TerminalService "org.wezfurlong.wezterm.desktop"
+
 # Apply changes immediately if running inside an active Plasma session
 if pgrep -x "plasmashell" > /dev/null; then
     plasma-apply-colorscheme BreezeLight || true
