@@ -71,6 +71,8 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 │   └── mpv/
 │       └── mpv.conf                       # mpv hardware video decoding (~/.config/mpv/mpv.conf)
 ├── dot_gemini/
+│   ├── antigravity-cli/
+│   │   └── private_settings.json.tmpl     # Antigravity CLI sandbox & permissions (~/.gemini/antigravity-cli/settings.json)
 │   └── config/
 │       └── private_mcp_config.json.tmpl   # Global Antigravity MCP server config (~/.gemini/config/mcp_config.json)
 ├── dot_local/
