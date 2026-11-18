@@ -64,8 +64,10 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 ├── dot_textadept/
 │   └── init.lua                           # Textadept configuration (~/.textadept/init.lua)
 ├── dot_config/
-│   └── fontconfig/
-│       └── fonts.conf                     # Fontconfig RGB subpixel & full hinting (~/.config/fontconfig/fonts.conf)
+│   ├── fontconfig/
+│   │   └── fonts.conf                     # Fontconfig RGB subpixel & full hinting (~/.config/fontconfig/fonts.conf)
+│   └── mpv/
+│       └── mpv.conf                       # mpv hardware video decoding (~/.config/mpv/mpv.conf)
 ├── dot_local/share/applications/          # Custom Desktop Launchers (.desktop files)
 │   ├── intellij.desktop
 │   └── textadept.desktop

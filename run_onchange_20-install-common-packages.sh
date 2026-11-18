@@ -153,6 +153,11 @@ if command -v xdg-mime &> /dev/null; then
     xdg-mime default org.kde.ktorrent.desktop application/x-bittorrent x-scheme-handler/magnet || true
 fi
 
+# 6b. Haruna Video Player (enable hardware decoding via libmpv)
+mkdir -p "$HOME/.config/haruna"
+kwriteconfig6 --file "$HOME/.config/haruna/haruna.conf" --group Playback --key UseHWDecoding true
+kwriteconfig6 --file "$HOME/.config/haruna/haruna.conf" --group Playback --key HWDecodingBackend auto-safe
+
 # 7. Night Light (Always on at 5000K)
 kwriteconfig6 --file kwinrc --group NightColor --key Active true
 kwriteconfig6 --file kwinrc --group NightColor --key Mode Constant
