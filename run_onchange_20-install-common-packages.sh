@@ -56,6 +56,7 @@ APPS=(
     firefox-esr
     ktorrent
     okular
+    strawberry
 )
 
 # Pre-accept Microsoft EULA for unattended font installation

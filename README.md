@@ -29,7 +29,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 * **📦 Curated Software Suite**:
   * **Browsers**: Chromium, Firefox ESR, system web tools.
   * **IDEs & Editors**: IntelliJ IDEA Ultimate, Textadept, WezTerm.
-  * **Communication & Utilities**: Telegram Desktop, Discord, Zoom, Filen Desktop, ExpressVPN, KTorrent, Okular.
+  * **Communication & Utilities**: Telegram Desktop, Discord, Zoom, Filen Desktop, ExpressVPN, KTorrent, Okular, Strawberry.
 
 ---
 
@@ -149,7 +149,7 @@ flowchart TD
 | **IDEs & Editors** | IntelliJ IDEA, Textadept | Clean desktop integration, `/opt` installations, custom keybindings |
 | **Browsers** | Chromium, Firefox ESR | Debian repository packages |
 | **Containers** | Docker Engine | `docker-ce`, `docker-compose-plugin`, auto group configuration |
-| **Productivity / Media** | Discord, Telegram, Zoom, Filen | Official `.deb` packages & Linux tarballs |
+| **Productivity / Media** | Discord, Telegram, Zoom, Filen, Strawberry | Official `.deb` packages, Linux tarballs, & Debian APT (`strawberry`) |
 | **VPN & Security** | ExpressVPN, Bitwarden, Age | CLI vault access & encrypted SSH keys |
 
 ---
