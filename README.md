@@ -24,12 +24,12 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
   * **Docker Engine**: Official upstream Docker repository setup, user group auto-assignment, and `docker-compose-plugin` / `docker-buildx-plugin`.
 * **🎨 Desktop Environment & Themes**:
   * **KDE Plasma**: Minimal KDE Plasma desktop environment (`kde-plasma-desktop`) with SDDM, Xorg fallback, System Settings, KScreen, PowerDevil, Spectacle, System Monitor, Ark, Gwenview, Plasma Network/Audio applets (`pipewire-audio`), `kio-extras`/`kio-fuse`, and `xdg-desktop-portal-kde`/`gtk`, configured with **Breeze Light** look-and-feel, keyboard layouts (US + RU with `Alt+Shift` toggle), and Dolphin global view preferences.
-  * **Themes, Icons & Cursor**: Breeze GTK theme (`breeze-gtk-theme`, `kde-config-gtk-style`, `xsettingsd`, `sddm-theme-breeze`), Papirus Light icon set, Bibata Modern Ice cursor.
+  * **Themes, Icons & Cursor**: Breeze GTK theme (`breeze-gtk-theme`, `kde-config-gtk-style`, `xsettingsd`, `sddm-theme-breeze`, `sddm-theme-debian-breeze`, `desktop-base`, `grub-theme-breeze`), Papirus Light icon set, Bibata Modern Ice cursor.
   * **Fonts & Prompt**: JetBrains Mono Nerd Font paired with [Starship](https://starship.rs/) prompt.
 * **📦 Curated Software Suite**:
   * **Browsers**: Chromium, Firefox ESR, system web tools.
   * **IDEs & Editors**: IntelliJ IDEA Ultimate, Textadept, WezTerm.
-  * **Communication & Utilities**: Telegram Desktop, Discord, Zoom, Filen Desktop, ExpressVPN, KTorrent, Okular.
+  * **Communication & Utilities**: Telegram Desktop, Discord, Zoom, Filen Desktop, ExpressVPN, KTorrent, Okular, Strawberry, Haruna.
 
 ---
 
@@ -45,24 +45,29 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 ├── run_before_01-decrypt-key.sh.tmpl      # Fetches Age private key from Bitwarden
 ├── run_onchange_00-add-repositories.sh    # Configures APT repos (XanMod, WezTerm, Docker, non-free)
 ├── run_onchange_10-install-xanmod.sh.tmpl # Installs XanMod kernel & Nvidia drivers (if present)
-├── run_onchange_20-install-laptop-packages.sh.tmpl # Configures laptop power & audio (if laptop)
-├── run_onchange_30-install-common-packages.sh      # Installs common CLI tools, KDE Plasma & themes
-├── run_onchange_40-install-antigravity.sh # Google Antigravity CLI installer
-├── run_onchange_40-install-discord.sh     # Discord .deb installer
-├── run_onchange_40-install-docker.sh      # Docker Engine & plugin setup
-├── run_onchange_40-install-expressvpn.sh  # ExpressVPN installer
-├── run_onchange_40-install-filen.sh       # Filen desktop client installer
-├── run_onchange_40-install-git.sh         # Global git config & bash completion
-├── run_onchange_40-install-intellij.sh    # IntelliJ IDEA Ultimate installer (/opt/idea)
-├── run_onchange_40-install-sdks.sh        # SDKMAN!, Java 21, Maven installation
-├── run_onchange_40-install-telegram.sh    # Telegram Desktop installer (/opt/Telegram)
-├── run_onchange_40-install-textadept.sh   # Textadept text editor installer (/opt/textadept)
-├── run_onchange_40-install-zoom.sh        # Zoom .deb installer
-├── run_onchange_50-install-nerd-fonts.sh  # JetBrains Mono Nerd Font & Starship prompt
+├── run_onchange_20-install-common-packages.sh      # Installs common CLI tools, KDE Plasma & themes
+├── run_onchange_30-install-laptop-packages.sh.tmpl # Configures laptop power & audio (if laptop)
+├── run_onchange_40-install-nerd-fonts.sh  # JetBrains Mono Nerd Font & Starship prompt
+├── run_onchange_50-install-antigravity.sh # Google Antigravity CLI installer
+├── run_onchange_50-install-docker.sh      # Docker Engine & plugin setup
+├── run_onchange_50-install-git.sh         # Global git config & bash completion
+├── run_onchange_50-install-sdks.sh        # SDKMAN!, Java 25, Maven installation
+├── run_onchange_60-install-discord.sh     # Discord .deb installer
+├── run_onchange_60-install-filen.sh       # Filen desktop client installer
+├── run_onchange_60-install-intellij.sh    # IntelliJ IDEA Ultimate installer (/opt/idea)
+├── run_onchange_60-install-telegram.sh    # Telegram Desktop installer (/opt/Telegram)
+├── run_onchange_60-install-textadept.sh   # Textadept text editor installer (/opt/textadept)
+├── run_onchange_60-install-zoom.sh        # Zoom .deb installer
+├── run_onchange_70-install-expressvpn.sh  # ExpressVPN installer (requires active GUI session)
 ├── dot_bashrc.tmpl                        # Bash configuration template (~/.bashrc)
 ├── dot_wezterm.lua                        # WezTerm configuration (~/.wezterm.lua)
 ├── dot_textadept/
 │   └── init.lua                           # Textadept configuration (~/.textadept/init.lua)
+├── dot_config/
+│   ├── fontconfig/
+│   │   └── fonts.conf                     # Fontconfig RGB subpixel & full hinting (~/.config/fontconfig/fonts.conf)
+│   └── mpv/
+│       └── mpv.conf                       # mpv hardware video decoding (~/.config/mpv/mpv.conf)
 ├── dot_local/share/applications/          # Custom Desktop Launchers (.desktop files)
 │   ├── intellij.desktop
 │   └── textadept.desktop
@@ -105,7 +110,7 @@ wget -qO- https://raw.githubusercontent.com/yury-smirnov87/dotfiles/main/bootstr
 
 ### What `bootstrap.sh` Does:
 
-1. Ensures baseline dependencies (`git`, `unzip`) and `~/.local/bin` exist.
+1. Ensures baseline dependencies (`git`, `unzip`, `pciutils`) and `~/.local/bin` exist.
 2. Installs `chezmoi` idempotently into `~/.local/bin` using `wget`.
 3. Downloads and installs the **Bitwarden CLI** (`bw`).
 4. Authenticates to Bitwarden using your **Personal API Key** (bypassing 2FA) and unlocks the vault, exporting `BW_SESSION` in the active shell.
@@ -126,11 +131,13 @@ flowchart TD
     B --> C[run_before_01: Decrypt Age Key from Vault]
     C --> D[run_onchange_00: APT Repos & GPG Keys]
     D --> E[run_onchange_10: XanMod Kernel & Nvidia]
-    E --> F[run_onchange_20: Laptop Firmware & TLP]
-    F --> G[run_onchange_30: Common Packages & KDE Plasma]
-    G --> H[run_onchange_40: Applications & SDKs]
-    H --> I[run_onchange_50: Nerd Fonts & Starship Prompt]
-    I --> J[Apply Dotfiles & Configurations]
+    E --> F[run_onchange_20: Common Packages & KDE Plasma]
+    F --> G[run_onchange_30: Laptop Firmware, Audio & TLP]
+    G --> H[run_onchange_40: Nerd Fonts & Starship Prompt]
+    H --> I[run_onchange_50: CLI Tools, SDKs & Docker]
+    I --> J[run_onchange_60: Desktop GUI Applications]
+    J --> K[run_onchange_70: ExpressVPN GUI Installer]
+    K --> L[Apply Dotfiles & Configurations]
 ```
 
 ### Managed Applications & Runtimes Summary
@@ -144,7 +151,7 @@ flowchart TD
 | **IDEs & Editors** | IntelliJ IDEA, Textadept | Clean desktop integration, `/opt` installations, custom keybindings |
 | **Browsers** | Chromium, Firefox ESR | Debian repository packages |
 | **Containers** | Docker Engine | `docker-ce`, `docker-compose-plugin`, auto group configuration |
-| **Productivity / Media** | Discord, Telegram, Zoom, Filen | Official `.deb` packages & Linux tarballs |
+| **Productivity / Media** | Discord, Telegram, Zoom, Filen, Strawberry, Haruna | Official `.deb` packages, Linux tarballs, & Debian APT (`strawberry`, `haruna`) |
 | **VPN & Security** | ExpressVPN, Bitwarden, Age | CLI vault access & encrypted SSH keys |
 
 ---

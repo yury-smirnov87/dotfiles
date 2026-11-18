@@ -16,5 +16,5 @@
   - Common paths (such as `$HOME/.local/bin`) are already exported in `dot_bashrc.tmpl`.
 
 ## Package Management & Documentation Sync
-- **Package Categorization**: When adding Debian APT packages, place them in the relevant array within `run_onchange_30-install-common-packages.sh` (`DEV_TOOLS`, `THEMES`, `FONTS`, `MULTIMEDIA`, or `APPS`).
+- **Package Categorization**: When adding Debian APT packages, place them in the relevant array within `run_onchange_20-install-common-packages.sh` (`DEV_TOOLS`, `THEMES`, `FONTS`, `MULTIMEDIA`, or `APPS`).
 - **Documentation Sync**: When packages or software suites are added, removed, or changed, update `README.md` to keep the software lists, directory tree, and summary table accurate.
