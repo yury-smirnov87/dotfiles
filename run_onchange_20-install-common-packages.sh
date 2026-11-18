@@ -57,6 +57,7 @@ APPS=(
     ktorrent
     okular
     strawberry
+    haruna
 )
 
 # Pre-accept Microsoft EULA for unattended font installation
