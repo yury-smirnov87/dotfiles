@@ -237,7 +237,7 @@ if pgrep -x "plasmashell" > /dev/null; then
     fi
 fi
 
-# 11. Configure graphical GRUB theme (Breeze)
+# 12. Configure graphical GRUB theme (Breeze)
 GRUB_FILE="/etc/default/grub"
 BREEZE_THEME=""
 for candidate in /boot/grub/themes/breeze/theme.txt /usr/share/grub/themes/breeze/theme.txt; do
@@ -265,6 +265,108 @@ if [ -f "$GRUB_FILE" ] && [ -n "$BREEZE_THEME" ]; then
 
     if command -v update-grub &> /dev/null; then
         sudo update-grub
+    fi
+fi
+
+# 13. Hand over Wi-Fi from ifupdown (/etc/network/interfaces) to NetworkManager
+if [ -f /etc/network/interfaces ] && command -v nmcli &> /dev/null && command -v python3 &> /dev/null; then
+    MIGRATED_WIFI=$(sudo python3 - <<'EOF'
+import os
+import re
+
+path = "/etc/network/interfaces"
+with open(path, "r", encoding="utf-8", errors="replace") as f:
+    lines = f.readlines()
+
+stanzas = []
+current = None
+for idx, raw in enumerate(lines):
+    s = raw.strip()
+    if not s or s.startswith("#"):
+        if current and not s:
+            current = None
+        continue
+    m = re.match(r"^(?:iface|mapping)\s+(\S+)", s)
+    if m:
+        current = {"iface": m.group(1), "lines": [idx], "options": {}}
+        stanzas.append(current)
+        continue
+    if re.match(r"^(?:auto|allow-\S+|source(?:-directory)?)\b", s):
+        current = None
+        continue
+    if current is not None and (raw[0].isspace()):
+        current["lines"].append(idx)
+        parts = s.split(None, 1)
+        if len(parts) == 2:
+            current["options"][parts[0]] = parts[1].strip()
+    else:
+        current = None
+
+wifi_ifaces = set()
+line_indices_to_comment = set()
+migrated = []
+
+for st in stanzas:
+    iface = st["iface"]
+    if iface == "lo":
+        continue
+    is_wifi = (
+        any(k.startswith(("wpa-", "wireless-")) for k in st["options"])
+        or os.path.exists(f"/sys/class/net/{iface}/wireless")
+    )
+    if is_wifi:
+        wifi_ifaces.add(iface)
+        line_indices_to_comment.update(st["lines"])
+        ssid = st["options"].get("wpa-ssid", "").strip("\"'")
+        psk = st["options"].get("wpa-psk", "").strip("\"'")
+        migrated.append((iface, ssid, psk))
+
+if wifi_ifaces:
+    for idx, raw in enumerate(lines):
+        s = raw.strip()
+        m = re.match(r"^(?:auto|allow-\S+)\s+(.+)$", s)
+        if m:
+            tokens = m.group(1).split()
+            if any(t in wifi_ifaces for t in tokens):
+                line_indices_to_comment.add(idx)
+
+    new_lines = [
+        f"# {raw}" if i in line_indices_to_comment and not raw.lstrip().startswith("#") else raw
+        for i, raw in enumerate(lines)
+    ]
+    with open(path, "w", encoding="utf-8") as f:
+        f.writelines(new_lines)
+
+    for iface, ssid, psk in migrated:
+        print(f"{iface}\t{ssid}\t{psk}")
+EOF
+)
+
+    if [ -n "$MIGRATED_WIFI" ]; then
+        echo "Handing Wi-Fi interface(s) over from ifupdown to NetworkManager..."
+        while IFS=$'\t' read -r wifi_iface wifi_ssid wifi_psk; do
+            [ -z "$wifi_iface" ] && continue
+            sudo ip link set "$wifi_iface" down || true
+            sudo pkill -f "wpa_supplicant.*$wifi_iface" || true
+        done <<< "$MIGRATED_WIFI"
+
+        sudo systemctl enable --now NetworkManager || true
+        sudo systemctl restart NetworkManager || true
+
+        while IFS=$'\t' read -r wifi_iface wifi_ssid wifi_psk; do
+            [ -z "$wifi_iface" ] || [ -z "$wifi_ssid" ] && continue
+            if ! nmcli -t -f NAME connection show 2>/dev/null | grep -Fxq "$wifi_ssid"; then
+                if [ -n "$wifi_psk" ]; then
+                    sudo nmcli connection add type wifi ifname "$wifi_iface" con-name "$wifi_ssid" ssid "$wifi_ssid" \
+                        wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$wifi_psk" || true
+                else
+                    sudo nmcli connection add type wifi ifname "$wifi_iface" con-name "$wifi_ssid" ssid "$wifi_ssid" || true
+                fi
+            fi
+            sudo nmcli connection up "$wifi_ssid" || true
+        done <<< "$MIGRATED_WIFI"
+
+        sudo nm-online -q -t 15 || true
     fi
 fi
 
