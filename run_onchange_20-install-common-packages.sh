@@ -5,7 +5,7 @@ export DEBIAN_FRONTEND=noninteractive
 echo "Installing common packages and desktop assets"
 
 # Grouping by purpose for easier maintenance
-DEV_TOOLS=(age curl git zip unzip wezterm nodejs npm sqlite3 sqlitebrowser)
+DEV_TOOLS=(age curl git zip unzip wezterm nodejs npm sqlite3 sqlitebrowser jq)
 THEMES=(
     breeze-gtk-theme
     kde-config-gtk-style

@@ -20,7 +20,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
   * **SDKMAN!**: Java (Temurin 25.0.4) & Maven (3.9.16).
   * **Node.js & npm**: System runtimes installed from Debian repository.
   * **SQLite**: SQLite 3 database CLI tooling and DB Browser for SQLite (`sqlitebrowser`) from Debian repository.
-  * **Google Antigravity CLI**: `agy` executable provisioning.
+  * **Google Antigravity CLI**: `agy` executable provisioning, terminal sandbox enforcement, curated safe command allowlist, and GitHub MCP integration with zero-plaintext Age-encrypted secrets (`mcp-env-exec` / `mcp-secrets-edit`).
   * **Docker Engine**: Official upstream Docker repository setup, user group auto-assignment, and `docker-compose-plugin` / `docker-buildx-plugin`.
 * **🎨 Desktop Environment & Themes**:
   * **KDE Plasma**: Minimal KDE Plasma desktop environment (`kde-plasma-desktop`) with SDDM, Xorg fallback, System Settings, KScreen, PowerDevil, Spectacle, System Monitor, Ark, Gwenview, Plasma Network/Audio applets (`pipewire-audio`), `kio-extras`/`kio-fuse`, and `xdg-desktop-portal-kde`/`gtk`, configured with **Breeze Light** look-and-feel, keyboard layouts (US + RU with `Alt+Shift` toggle), and Dolphin global view preferences.
@@ -64,13 +64,22 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 ├── dot_textadept/
 │   └── init.lua                           # Textadept configuration (~/.textadept/init.lua)
 ├── dot_config/
+│   ├── agy/
+│   │   └── private_mcp_secrets.env.age    # Age-encrypted MCP tokens kept encrypted on disk (~/.config/agy/mcp_secrets.env.age)
 │   ├── fontconfig/
 │   │   └── fonts.conf                     # Fontconfig RGB subpixel & full hinting (~/.config/fontconfig/fonts.conf)
 │   └── mpv/
 │       └── mpv.conf                       # mpv hardware video decoding (~/.config/mpv/mpv.conf)
-├── dot_local/share/applications/          # Custom Desktop Launchers (.desktop files)
-│   ├── intellij.desktop
-│   └── textadept.desktop
+├── dot_gemini/
+│   └── config/
+│       └── private_mcp_config.json.tmpl   # Global Antigravity MCP server config (~/.gemini/config/mcp_config.json)
+├── dot_local/
+│   ├── bin/
+│   │   ├── executable_mcp-env-exec        # Decrypts MCP secrets into memory and execs MCP servers
+│   │   └── executable_mcp-secrets-edit    # Helper CLI to view/edit/set Age-encrypted MCP secrets
+│   └── share/applications/                # Custom Desktop Launchers (.desktop files)
+│       ├── intellij.desktop
+│       └── textadept.desktop
 └── private_dot_ssh/                       # Encrypted SSH configuration and keys
     ├── config.tmpl
     ├── encrypted_private_id_ed25519.age   # Age-encrypted private SSH key
@@ -147,7 +156,7 @@ flowchart TD
 | **Desktop Environment** | KDE Plasma | Minimal Plasma setup (`kde-plasma-desktop`, SDDM, System Settings, KScreen, PowerDevil, Spectacle, System Monitor, Ark, Gwenview, Plasma NM/PA, PipeWire), Breeze Light theme, US/RU (`Alt+Shift`), Papirus Light icons, Bibata cursor |
 | **Shell & Terminal** | Bash, WezTerm, Starship | Gruvbox Material theme, JetBrains Mono Nerd Font, WebGPU support |
 | **System Kernel** | XanMod LTS x64v3 | Optional Nvidia drivers (v580) with `ibt=off` GRUB parameter |
-| **Development** | Java, Maven, Node.js, npm, Git, SQLite | SDKMAN! (Java 25 Temurin, Maven 3.9.16), Node.js & npm (Debian APT), Git completion, SQLite3 CLI & DB Browser for SQLite |
+| **Development** | Java, Maven, Node.js, npm, Git, SQLite, jq, Antigravity CLI | SDKMAN! (Java 25 Temurin, Maven 3.9.16), Node.js & npm (Debian APT), Git completion, SQLite3 CLI & DB Browser for SQLite, `jq`, `agy` with sandbox & GitHub MCP |
 | **IDEs & Editors** | IntelliJ IDEA, Textadept | Clean desktop integration, `/opt` installations, custom keybindings |
 | **Browsers** | Chromium, Firefox ESR | Debian repository packages |
 | **Containers** | Docker Engine | `docker-ce`, `docker-compose-plugin`, auto group configuration |
@@ -162,14 +171,29 @@ This repository uses **Age encryption** via chezmoi integration:
 
 * **Recipient Key**: `age1n62t5ygs08dtll40g306jttrdnj7ztqcf5yx5cjhszz6dv0ftuasajjw49`
 * **Identity File**: `~/.config/chezmoi/key.txt`
-* **Encrypted Assets**: Private SSH identity (`encrypted_private_id_ed25519.age`).
+* **Encrypted Assets**:
+  * Private SSH identity (`encrypted_private_id_ed25519.age` — decrypted by chezmoi to `~/.ssh/id_ed25519`).
+  * Antigravity MCP tokens (`dot_config/agy/private_mcp_secrets.env.age` — kept **encrypted on disk** at `~/.config/agy/mcp_secrets.env.age` and decrypted only into child process memory by `~/.local/bin/mcp-env-exec`).
 
 ### Re-encrypting / Editing Encrypted Files
 
-To view or edit encrypted files within chezmoi:
+To view or edit chezmoi-managed encrypted files:
 
 ```bash
 chezmoi edit ~/.ssh/id_ed25519
+```
+
+To add or update Antigravity MCP secrets (such as `GITHUB_PERSONAL_ACCESS_TOKEN` or `JIRA_API_TOKEN`) without writing plaintext to disk:
+
+```bash
+# Set a token non-interactively in memory (updates both chezmoi source and ~/.config/agy/mcp_secrets.env.age):
+mcp-secrets-edit set GITHUB_PERSONAL_ACCESS_TOKEN ghp_your_token_here
+
+# Or edit all MCP secrets interactively in RAM (/dev/shm):
+mcp-secrets-edit
+
+# List configured secret variable names (values hidden):
+mcp-secrets-edit list
 ```
 
 ---
