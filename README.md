@@ -30,6 +30,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
   * **Browsers**: Chromium, Firefox ESR, system web tools.
   * **IDEs & Editors**: IntelliJ IDEA Ultimate, Textadept, WezTerm.
   * **Communication & Utilities**: Telegram Desktop, Discord, Zoom, Filen Desktop, ExpressVPN, KTorrent, Okular, Strawberry, Haruna.
+  * **Printing & Scanning**: CUPS (`cups`, `cups-browsed`), Avahi mDNS (`avahi-daemon`, `libnss-mdns`), KDE Print Manager (`print-manager`), Brother laser driver (`printer-driver-brlaser`), SANE AirScan (`sane-utils`, `sane-airscan`), and Skanpage (`skanpage`) for Wi-Fi printing and scanning.
 
 ---
 
@@ -163,6 +164,7 @@ flowchart TD
 | **Browsers** | Chromium, Firefox ESR | Debian repository packages |
 | **Containers** | Docker Engine | `docker-ce`, `docker-compose-plugin`, auto group configuration |
 | **Productivity / Media** | Discord, Telegram, Zoom, Filen, Strawberry, Haruna | Official `.deb` packages, Linux tarballs, & Debian APT (`strawberry`, `haruna`) |
+| **Printing & Scanning** | CUPS, Avahi, SANE, Skanpage | Wi-Fi IPP/AirPrint & eSCL/AirScan (`cups`, `cups-browsed`, `avahi-daemon`, `libnss-mdns`, `print-manager`, `printer-driver-brlaser`, `sane-utils`, `sane-airscan`, `skanpage`) |
 | **VPN & Security** | ExpressVPN, Bitwarden, Age | CLI vault access & encrypted SSH keys |
 
 ---
