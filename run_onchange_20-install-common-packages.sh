@@ -58,6 +58,15 @@ APPS=(
     okular
     strawberry
     haruna
+    avahi-daemon
+    libnss-mdns
+    cups
+    cups-browsed
+    print-manager
+    printer-driver-brlaser
+    sane-utils
+    sane-airscan
+    skanpage
 )
 
 # Pre-accept Microsoft EULA for unattended font installation
@@ -374,6 +383,16 @@ EOF
         done <<< "$MIGRATED_WIFI"
 
         sudo nm-online -q -t 15 || true
+    fi
+fi
+
+# 14. Enable printing & scanning services (Avahi mDNS, CUPS) and lpadmin group
+if command -v systemctl &> /dev/null; then
+    sudo systemctl enable --now avahi-daemon cups cups-browsed || true
+fi
+if [ -n "${USER:-}" ] && [ "$USER" != "root" ] && getent group lpadmin > /dev/null; then
+    if ! id -nG "$USER" | grep -qw "lpadmin"; then
+        sudo usermod -aG lpadmin "$USER" || true
     fi
 fi
 
