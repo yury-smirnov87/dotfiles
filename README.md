@@ -63,6 +63,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 ├── run_onchange_80-configure-plasma-session.sh # Applies live Plasma session themes, caches & panel launchers
 ├── dot_bashrc.tmpl                        # Bash configuration template (~/.bashrc)
 ├── dot_wezterm.lua                        # WezTerm configuration (~/.wezterm.lua)
+├── dot_xinputrc                           # Disables im-config auto-starting IBus on Wayland (~/.xinputrc)
 ├── dot_textadept/
 │   └── init.lua                           # Textadept configuration (~/.textadept/init.lua)
 ├── dot_config/
