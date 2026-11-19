@@ -80,11 +80,6 @@ fc-cache -fv > /dev/null
 
 echo "Applying KDE Plasma UI preferences..."
 
-# Apply base Look & Feel first in an active session so subsequent overrides are not reset
-if pgrep -x "plasmashell" > /dev/null; then
-    plasma-apply-lookandfeel -a org.kde.breeze.desktop || true
-fi
-
 # 1. Global Theme & Light Color Scheme (Breeze Light)
 kwriteconfig6 --file kdeglobals --group KDE --key LookAndFeelPackage "org.kde.breeze.desktop"
 kwriteconfig6 --file kdeglobals --group KDE --key widgetStyle "Breeze"
@@ -133,6 +128,7 @@ kwriteconfig6 --file dolphinrc --group IconsMode --key IconSize 32
 
 rm -rf "$HOME/.local/share/dolphin/view_properties/global"
 mkdir -p "$HOME/.local/share/dolphin/view_properties/global"
+kwriteconfig6 --file "$HOME/.local/share/dolphin/view_properties/global/.directory" --group Dolphin --key Version 4
 kwriteconfig6 --file "$HOME/.local/share/dolphin/view_properties/global/.directory" --group Dolphin --key ViewMode 1
 kwriteconfig6 --file "$HOME/.local/share/dolphin/view_properties/global/.directory" --group Settings --key HiddenFilesShown true
 rm -f "$HOME/.config/session/dolphin_"*
@@ -203,55 +199,6 @@ for panel_group in "${PANEL_GROUPS[@]}"; do
     kwriteconfig6 --file plasmashellrc --group PlasmaViews --group "$panel_group" --key floating 0
     kwriteconfig6 --file plasmashellrc --group PlasmaViews --group "$panel_group" --key panelVisibility 1
 done
-
-APPLETS_RC="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
-if [ -f "$APPLETS_RC" ]; then
-    while IFS=':' read -r containment_id applet_id; do
-        [ -z "$containment_id" ] || [ -z "$applet_id" ] && continue
-        current_launchers=$(kreadconfig6 --file plasma-org.kde.plasma.desktop-appletsrc \
-            --group Containments --group "$containment_id" --group Applets --group "$applet_id" \
-            --group Configuration --group General --key launchers 2>/dev/null || true)
-        if [ -z "$current_launchers" ]; then
-            current_launchers="applications:systemsettings.desktop,applications:org.kde.discover.desktop,preferred://filemanager,preferred://browser"
-        fi
-        new_launchers=$(echo "$current_launchers" | tr ',' '\n' | grep -vxE 'applications:org\.kde\.discover\.desktop|org\.kde\.discover\.desktop|preferred://terminal' | paste -sd ',' -)
-        if ! echo ",$new_launchers," | grep -q ',applications:org\.wezfurlong\.wezterm\.desktop,'; then
-            new_launchers="${new_launchers:+$new_launchers,}applications:org.wezfurlong.wezterm.desktop"
-        fi
-        kwriteconfig6 --file plasma-org.kde.plasma.desktop-appletsrc \
-            --group Containments --group "$containment_id" --group Applets --group "$applet_id" \
-            --group Configuration --group General --key launchers "$new_launchers"
-    done < <(awk '
-        /^\[Containments\]\[[0-9]+\]\[Applets\]\[[0-9]+\]$/ {
-            gsub(/\[Containments\]\[|\]\[Applets\]\[|\]/, ":")
-            sub(/^:/, ""); sub(/:$/, "")
-            key = $0
-            next
-        }
-        /^\[/ { key = "" }
-        key != "" && /^plugin=org\.kde\.plasma\.(icontasks|taskmanager)$/ {
-            print key
-            key = ""
-        }
-    ' "$APPLETS_RC")
-fi
-
-# Apply changes immediately if running inside an active Plasma session
-if pgrep -x "plasmashell" > /dev/null; then
-    plasma-apply-colorscheme BreezeLight || true
-    plasma-apply-cursortheme --size 24 Bibata-Modern-Ice || true
-    for changeicons_bin in /usr/libexec/plasma-changeicons /usr/lib/x86_64-linux-gnu/libexec/plasma-changeicons; do
-        if [ -x "$changeicons_bin" ]; then
-            "$changeicons_bin" Papirus-Light || true
-            break
-        fi
-    done
-    if command -v dbus-send &> /dev/null; then
-        dbus-send --session --type=signal /Layouts org.kde.keyboard.reloadConfig || true
-        dbus-send --session --type=method_call --dest=org.kde.KWin /KWin org.kde.KWin.reconfigure || true
-        dbus-send --session --type=method_call --dest=org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:panels().forEach(p => { p.hiding = "autohide"; p.floating = false; p.widgets().forEach(w => { if (w.type === "org.kde.plasma.icontasks" || w.type === "org.kde.plasma.taskmanager") { w.currentConfigGroup = ["General"]; let raw = w.readConfig("launchers", "applications:systemsettings.desktop,applications:org.kde.discover.desktop,preferred://filemanager,preferred://browser"); let arr = Array.isArray(raw) ? raw : String(raw || "").split(","); let filtered = arr.map(s => String(s).trim()).filter(s => s && s !== "applications:org.kde.discover.desktop" && s !== "org.kde.discover.desktop" && s !== "preferred://terminal"); if (!filtered.includes("applications:org.wezfurlong.wezterm.desktop")) { filtered.push("applications:org.wezfurlong.wezterm.desktop"); } w.writeConfig("launchers", filtered.join(",")); } }); });' || true
-    fi
-fi
 
 # 12. Configure graphical GRUB theme (Breeze)
 GRUB_FILE="/etc/default/grub"

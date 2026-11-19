@@ -60,6 +60,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
 ├── run_onchange_60-install-textadept.sh   # Textadept text editor installer (/opt/textadept)
 ├── run_onchange_60-install-zoom.sh        # Zoom .deb installer
 ├── run_onchange_70-install-expressvpn.sh  # ExpressVPN installer (requires active GUI session)
+├── run_onchange_80-configure-plasma-session.sh # Applies live Plasma session themes, caches & panel launchers
 ├── dot_bashrc.tmpl                        # Bash configuration template (~/.bashrc)
 ├── dot_wezterm.lua                        # WezTerm configuration (~/.wezterm.lua)
 ├── dot_textadept/
