@@ -80,9 +80,12 @@ fc-cache -fv > /dev/null
 
 echo "Applying KDE Plasma UI preferences..."
 
-# Apply base Look & Feel first in an active session so subsequent overrides are not reset
+# Apply base Look & Feel first in an active session only if not already set, so subsequent overrides are not unnecessarily reset
 if pgrep -x "plasmashell" > /dev/null; then
-    plasma-apply-lookandfeel -a org.kde.breeze.desktop || true
+    CURRENT_LNFP=$(kreadconfig6 --file kdeglobals --group KDE --key LookAndFeelPackage 2>/dev/null || true)
+    if [ "$CURRENT_LNFP" != "org.kde.breeze.desktop" ]; then
+        plasma-apply-lookandfeel -a org.kde.breeze.desktop || true
+    fi
 fi
 
 # 1. Global Theme & Light Color Scheme (Breeze Light)
@@ -133,6 +136,7 @@ kwriteconfig6 --file dolphinrc --group IconsMode --key IconSize 32
 
 rm -rf "$HOME/.local/share/dolphin/view_properties/global"
 mkdir -p "$HOME/.local/share/dolphin/view_properties/global"
+kwriteconfig6 --file "$HOME/.local/share/dolphin/view_properties/global/.directory" --group Dolphin --key Version 4
 kwriteconfig6 --file "$HOME/.local/share/dolphin/view_properties/global/.directory" --group Dolphin --key ViewMode 1
 kwriteconfig6 --file "$HOME/.local/share/dolphin/view_properties/global/.directory" --group Settings --key HiddenFilesShown true
 rm -f "$HOME/.config/session/dolphin_"*
@@ -205,7 +209,7 @@ for panel_group in "${PANEL_GROUPS[@]}"; do
 done
 
 APPLETS_RC="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
-if [ -f "$APPLETS_RC" ]; then
+if ! pgrep -x "plasmashell" > /dev/null && [ -f "$APPLETS_RC" ]; then
     while IFS=':' read -r containment_id applet_id; do
         [ -z "$containment_id" ] || [ -z "$applet_id" ] && continue
         current_launchers=$(kreadconfig6 --file plasma-org.kde.plasma.desktop-appletsrc \
@@ -236,21 +240,62 @@ if [ -f "$APPLETS_RC" ]; then
     ' "$APPLETS_RC")
 fi
 
-# Apply changes immediately if running inside an active Plasma session
-if pgrep -x "plasmashell" > /dev/null; then
-    plasma-apply-colorscheme BreezeLight || true
-    plasma-apply-cursortheme --size 24 Bibata-Modern-Ice || true
-    for changeicons_bin in /usr/libexec/plasma-changeicons /usr/lib/x86_64-linux-gnu/libexec/plasma-changeicons; do
-        if [ -x "$changeicons_bin" ]; then
-            "$changeicons_bin" Papirus-Light || true
+# Live-session Plasma initialization script (runs now if Plasma is active, or once on first GUI login)
+PLASMA_INIT_SCRIPT="$HOME/.local/share/dotfiles-plasma-init.sh"
+PLASMA_AUTOSTART_FILE="$HOME/.config/autostart/dotfiles-plasma-init.desktop"
+mkdir -p "$HOME/.local/share"
+cat << 'EOF' > "$PLASMA_INIT_SCRIPT"
+#!/usr/bin/env bash
+set -u
+
+# Wait for plasmashell to register on the session bus (up to 20s on first login)
+if command -v dbus-send &> /dev/null; then
+    for _ in $(seq 1 40); do
+        if dbus-send --session --dest=org.freedesktop.DBus --type=method_call --print-reply \
+            /org/freedesktop/DBus org.freedesktop.DBus.NameHasOwner string:org.kde.plasmashell 2>/dev/null | grep -q "boolean true"; then
             break
         fi
+        sleep 0.5
     done
-    if command -v dbus-send &> /dev/null; then
-        dbus-send --session --type=signal /Layouts org.kde.keyboard.reloadConfig || true
-        dbus-send --session --type=method_call --dest=org.kde.KWin /KWin org.kde.KWin.reconfigure || true
-        dbus-send --session --type=method_call --dest=org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:panels().forEach(p => { p.hiding = "autohide"; p.floating = false; p.widgets().forEach(w => { if (w.type === "org.kde.plasma.icontasks" || w.type === "org.kde.plasma.taskmanager") { w.currentConfigGroup = ["General"]; let raw = w.readConfig("launchers", "applications:systemsettings.desktop,applications:org.kde.discover.desktop,preferred://filemanager,preferred://browser"); let arr = Array.isArray(raw) ? raw : String(raw || "").split(","); let filtered = arr.map(s => String(s).trim()).filter(s => s && s !== "applications:org.kde.discover.desktop" && s !== "org.kde.discover.desktop" && s !== "preferred://terminal"); if (!filtered.includes("applications:org.wezfurlong.wezterm.desktop")) { filtered.push("applications:org.wezfurlong.wezterm.desktop"); } w.writeConfig("launchers", filtered.join(",")); } }); });' || true
+fi
+
+# Refresh KDE service and icon caches so desktop launchers (WezTerm, System Settings) resolve cleanly
+rm -f "$HOME/.cache/icon-cache.kcache"
+if command -v kbuildsycoca6 &> /dev/null; then
+    kbuildsycoca6 --noincremental || true
+fi
+
+plasma-apply-colorscheme BreezeLight || true
+plasma-apply-cursortheme --size 24 Bibata-Modern-Ice || true
+for changeicons_bin in /usr/libexec/plasma-changeicons /usr/lib/x86_64-linux-gnu/libexec/plasma-changeicons; do
+    if [ -x "$changeicons_bin" ]; then
+        "$changeicons_bin" Papirus-Light || true
+        break
     fi
+done
+
+if command -v dbus-send &> /dev/null; then
+    dbus-send --session --type=signal /Layouts org.kde.keyboard.reloadConfig || true
+    dbus-send --session --type=method_call --dest=org.kde.KWin /KWin org.kde.KWin.reconfigure || true
+    dbus-send --session --type=method_call --dest=org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:panels().forEach(p => { p.hiding = "autohide"; p.floating = false; p.widgets().forEach(w => { if (w.type === "org.kde.plasma.icontasks" || w.type === "org.kde.plasma.taskmanager") { w.currentConfigGroup = ["General"]; let raw = w.readConfig("launchers", "applications:systemsettings.desktop,applications:org.kde.discover.desktop,preferred://filemanager,preferred://browser"); let arr = Array.isArray(raw) ? raw : String(raw || "").split(","); let filtered = arr.map(s => String(s).trim()).filter(s => s && s !== "applications:org.kde.discover.desktop" && s !== "org.kde.discover.desktop" && s !== "preferred://terminal"); if (!filtered.includes("applications:org.wezfurlong.wezterm.desktop")) { filtered.push("applications:org.wezfurlong.wezterm.desktop"); } w.writeConfig("launchers", filtered.join(",")); } }); });' || true
+fi
+
+rm -f "$HOME/.config/autostart/dotfiles-plasma-init.desktop" "$HOME/.local/share/dotfiles-plasma-init.sh"
+EOF
+chmod +x "$PLASMA_INIT_SCRIPT"
+
+if pgrep -x "plasmashell" > /dev/null; then
+    "$PLASMA_INIT_SCRIPT" || true
+else
+    mkdir -p "$HOME/.config/autostart"
+    cat << EOF > "$PLASMA_AUTOSTART_FILE"
+[Desktop Entry]
+Type=Application
+Name=Dotfiles Plasma Initializer
+Exec=$PLASMA_INIT_SCRIPT
+OnlyShowIn=KDE;
+X-GNOME-Autostart-enabled=true
+EOF
 fi
 
 # 12. Configure graphical GRUB theme (Breeze)
