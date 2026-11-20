@@ -20,7 +20,7 @@ This repository automates the end-to-end setup of a full-featured Linux workstat
   * **SDKMAN!**: Java (Temurin 25.0.4) & Maven (3.9.16).
   * **Node.js & npm**: System runtimes installed from Debian repository.
   * **SQLite**: SQLite 3 database CLI tooling and DB Browser for SQLite (`sqlitebrowser`) from Debian repository.
-  * **Google Antigravity CLI**: `agy` executable provisioning, terminal sandbox enforcement, curated safe command allowlist, and GitHub MCP integration with zero-plaintext Age-encrypted secrets (`mcp-env-exec` / `mcp-secrets-edit`).
+  * **Google Antigravity CLI**: `agy` executable provisioning, terminal sandbox enforcement, curated safe command allowlist, and MCP integrations (GitHub with zero-plaintext Age-encrypted secrets via `mcp-env-exec` / `mcp-secrets-edit`, Puppeteer browser automation).
   * **Docker Engine**: Official upstream Docker repository setup, user group auto-assignment, and `docker-compose-plugin` / `docker-buildx-plugin`.
 * **🎨 Desktop Environment & Themes**:
   * **KDE Plasma**: Minimal KDE Plasma desktop environment (`kde-plasma-desktop`) with SDDM, Xorg fallback, System Settings, KScreen, PowerDevil, Spectacle, System Monitor, Ark, Gwenview, Plasma Network/Audio applets (`pipewire-audio`), `kio-extras`/`kio-fuse`, and `xdg-desktop-portal-kde`/`gtk`, configured with **Breeze Light** look-and-feel, keyboard layouts (US + RU with `Alt+Shift` toggle), and Dolphin global view preferences.
@@ -161,7 +161,7 @@ flowchart TD
 | **Desktop Environment** | KDE Plasma | Minimal Plasma setup (`kde-plasma-desktop`, SDDM, System Settings, KScreen, PowerDevil, Spectacle, System Monitor, Ark, Gwenview, Plasma NM/PA, PipeWire), Breeze Light theme, US/RU (`Alt+Shift`), Papirus Light icons, Bibata cursor |
 | **Shell & Terminal** | Bash, WezTerm, Starship | Gruvbox Material theme, JetBrains Mono Nerd Font, WebGPU support |
 | **System Kernel** | XanMod LTS x64v3 | Optional Nvidia drivers (v580) with `ibt=off` GRUB parameter |
-| **Development** | Java, Maven, Node.js, npm, Git, SQLite, jq, Antigravity CLI | SDKMAN! (Java 25 Temurin, Maven 3.9.16), Node.js & npm (Debian APT), Git completion, SQLite3 CLI & DB Browser for SQLite, `jq`, `agy` with sandbox & GitHub MCP |
+| **Development** | Java, Maven, Node.js, npm, Git, SQLite, jq, Antigravity CLI | SDKMAN! (Java 25 Temurin, Maven 3.9.16), Node.js & npm (Debian APT), Git completion, SQLite3 CLI & DB Browser for SQLite, `jq`, `agy` with sandbox & GitHub/Puppeteer MCP |
 | **IDEs & Editors** | IntelliJ IDEA, Textadept | Clean desktop integration, `/opt` installations, custom keybindings |
 | **Browsers** | Chromium, Firefox ESR | Debian repository packages |
 | **Containers** | Docker Engine | `docker-ce`, `docker-compose-plugin`, auto group configuration |
